@@ -59,6 +59,42 @@ function toggleAudio() {
     }
 }
 
+// --- AUDIO CONTROLLER ENGINE & SMART FREE SCROLL ---
+let isUserScrolling = false;
+let userScrollTimeout = null;
+
+// Deteksi jika user melakukan scroll manual di dalam lyricsBox
+if (lyricsBox) {
+    lyricsBox.addEventListener('scroll', () => {
+        // Jika trigger scroll bukan dari sistem (smooth scroll otomatis)
+        if (!lyricsBox.classList.contains('system-scrolling')) {
+            isUserScrolling = true;
+            
+            // Reset timeout agar waktu tunggu diulang selama user masih menggeser lirik
+            clearTimeout(userScrollTimeout);
+            userScrollTimeout = setTimeout(() => {
+                isUserScrolling = false;
+            }, 3500); // 3.5 detik setelah geser manual selesai, autoscroll aktif lagi
+        }
+    });
+}
+
+function toggleAudio() {
+    if (!audio) return;
+    if (audio.paused) {
+        audio.play().then(() => {
+            audioToggleBtn.innerText = "Pause ⏸";
+            audioToggleBtn.classList.add('playing');
+        }).catch(err => {
+            alert("Error: Gagal memutar berkas audio. Pastikan berkas bernama audio.mp3 sudah berada di root repositori GitHub kamu.");
+        });
+    } else {
+        audio.pause();
+        audioToggleBtn.innerText = "Play ▶";
+        audioToggleBtn.classList.remove('playing');
+    }
+}
+
 if (audio) {
     audio.addEventListener('timeupdate', () => {
         const lyricLines = document.querySelectorAll('.lyric-line');
@@ -74,15 +110,28 @@ if (audio) {
         }
 
         if (activeIndex !== -1 && lyricsBox) {
+            // Tetap update class active agar lirik yang sedang bernyanyi tetap berubah warna
             lyricLines.forEach(line => line.classList.remove('active'));
             const activeLine = lyricLines[activeIndex];
             activeLine.classList.add('active');
             
-            const scrollPosition = activeLine.offsetTop - (lyricsBox.clientHeight / 2) + (activeLine.clientHeight / 2);
-            lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            // JIKA user tidak sedang menggeser lirik bebas, lakukan autoscroll secara halus
+            if (!isUserScrolling) {
+                const scrollPosition = activeLine.offsetTop - (lyricsBox.clientHeight / 2) + (activeLine.clientHeight / 2);
+                
+                // Beri penanda bahwa ini scroll dari sistem agar tidak bentrok dengan detektor manual
+                lyricsBox.classList.add('system-scrolling');
+                lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                
+                // Hapus penanda setelah animasi scroll selesai
+                setTimeout(() => {
+                    lyricsBox.classList.remove('system-scrolling');
+                }, 400); 
+            }
         }
     });
 }
+
 
 // --- SUB-SISTEM ALUR MODAL KUESIONER ---
 function startMysteryFlow() {
