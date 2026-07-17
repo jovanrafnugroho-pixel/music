@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodi Hati - Lagu & Lirik Interaktif</title>
+    <title>Melodi Hati - Refleksi & Lirik Interaktif</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -24,7 +24,8 @@
             justify-content: center;
             overflow-x: hidden;
             position: relative;
-            transition: background 1s ease;
+            /* Transisi background dibuat sangat smooth (1.2 detik) */
+            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* TEMA ANIMASI LATAR BELAKANG */
@@ -33,7 +34,7 @@
         }
 
         body.theme-heartbreak {
-            background: linear-gradient(135deg, #0b0f19, #1a2238, #404eed);
+            background: linear-gradient(135deg, #0b0f19, #161c2e, #2c3b75);
         }
 
         /* Wadah untuk Partikel Efek Terbang */
@@ -54,6 +55,7 @@
             font-size: 24px;
             animation: floatUp 6s linear infinite;
             opacity: 0;
+            transition: all 0.5s ease;
         }
 
         @keyframes floatUp {
@@ -61,10 +63,10 @@
                 transform: translateY(0) translateX(0) rotate(0deg);
                 opacity: 0;
             }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
             100% {
-                transform: translateY(-105vh) translateX(50px) rotate(360deg);
+                transform: translateY(-105vh) translateX(60px) rotate(360deg);
                 opacity: 0;
             }
         }
@@ -73,178 +75,267 @@
         .container {
             width: 90%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px rgba(255, 255, 255, 0.1) solid;
             border-radius: 24px;
             padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
             z-index: 10;
             text-align: center;
             transition: all 0.5s ease;
         }
 
         .player-header {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .album-art {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             border-radius: 50%;
             margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.4);
-            animation: pulse 3s infinite ease-in-out;
-            transition: all 0.5s ease;
+            font-size: 45px;
+            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.3);
+            animation: pulse 4s infinite ease-in-out;
+            transition: all 0.8s ease;
         }
 
         .theme-heartbreak .album-art {
-            background: linear-gradient(45deg, #4776e6, #8e54e9);
-            box-shadow: 0 10px 25px rgba(71, 118, 230, 0.4);
+            background: linear-gradient(45deg, #3a6073, #3a7bd5);
+            box-shadow: 0 10px 25px rgba(58, 123, 213, 0.3);
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
+            50% { transform: scale(1.03); }
         }
 
         .song-title {
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
 
         .artist-name {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         /* Tombol Ganti Tema */
         .theme-switcher {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .theme-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+        }
+
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
         }
 
         .theme-btn.active-love {
             background: #ff416c;
-            box-shadow: 0 0 10px rgba(255, 65, 108, 0.5);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 65, 108, 0.4);
+            border-color: transparent;
         }
 
         .theme-btn.active-break {
-            background: #4776e6;
-            box-shadow: 0 0 10px rgba(71, 118, 230, 0.5);
+            background: #3a7bd5;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(58, 123, 213, 0.4);
+            border-color: transparent;
         }
 
         /* Kotak Teks Lirik */
         .lyrics-box {
-            height: 220px;
+            height: 250px;
             overflow-y: scroll;
-            margin: 20px 0;
-            padding: 20px 10px;
+            margin: 15px 0;
+            padding: 10px 5px;
             position: relative;
-            mask-image: linear-gradient(to bottom, transparent 0%, white 20%, white 80%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, white 20%, white 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, white 25%, white 75%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, white 25%, white 75%, transparent 100%);
             scrollbar-width: none;
         }
 
         .lyrics-box::-webkit-scrollbar { display: none; }
 
         .lyrics-wrapper {
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            padding: 70px 0;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 90px 0;
         }
 
         .lyric-line {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.35);
-            padding: 12px 0;
-            transition: all 0.3s ease;
-            transform: scale(0.95);
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 14px 0;
+            transition: all 0.4s ease;
+            transform: scale(0.93);
             cursor: pointer;
+            line-height: 1.5;
+        }
+
+        /* Baris Refleksi/Filsafat Bergaya Cetak Miring Istimewa */
+        .lyric-line.philosophy {
+            font-style: italic;
+            font-weight: 300;
+            color: rgba(230, 230, 250, 0.4);
         }
 
         /* Efek Lirik saat Aktif Menyala */
         .lyric-line.active {
             color: #ffffff;
             font-weight: 600;
-            font-size: 19px;
-            transform: scale(1.05);
+            font-size: 18px;
+            transform: scale(1.04);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         }
 
         .theme-love .lyric-line.active {
             color: #ff7597;
-            text-shadow: 0 0 15px rgba(255, 117, 151, 0.6);
+            text-shadow: 0 0 12px rgba(255, 117, 151, 0.5);
+        }
+
+        .theme-love .lyric-line.philosophy.active {
+            color: #ffd3b6;
         }
 
         .theme-heartbreak .lyric-line.active {
-            color: #a0c4ff;
-            text-shadow: 0 0 15px rgba(160, 196, 255, 0.6);
+            color: #90b4ece7;
+            text-shadow: 0 0 12px rgba(144, 180, 236, 0.5);
+        }
+
+        .theme-heartbreak .lyric-line.philosophy.active {
+            color: #b3c5d7;
         }
 
         audio {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 10px;
             border-radius: 30px;
         }
     </style>
 </head>
 <body class="theme-love">
 
-    <!-- Efek Latar Belakang Interaktif -->
     <div class="ambient-particles" id="particleContainer"></div>
 
     <div class="container">
         <div class="player-header">
             <div class="album-art" id="albumArt">💝</div>
-            <h1 class="song-title">Kisah Hatiku</h1>
-            <p class="artist-name">Nama Penyanyi / Band</p>
+            <h1 class="song-title">Golden Boy</h1>
+            <p class="artist-name">Elf Power</p>
         </div>
 
-        <!-- Tombol untuk testing suasana hati manual -->
         <div class="theme-switcher">
-            <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Mode Dilanda Cinta 💝</button>
-            <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Mode Patah Hati 💧</button>
+            <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Suasana Senang 💝</button>
+            <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Suasana Galau 💧</button>
         </div>
 
-        <!-- DAFTAR LIRIK & SETTING WAKTU DETIK -->
+        <!-- DAFTAR LIRIK TIMING AKURAT DENGAN INSTRUMEN FILOSOFI -->
         <div class="lyrics-box" id="lyricsBox">
             <div class="lyrics-wrapper" id="lyricsWrapper">
-                <!-- Ubah angka data-time (dalam detik) agar pas dengan lagu asli kamu -->
-                <div class="lyric-line" data-time="0">🎵 (Intro Musik) 🎵</div>
-                <div class="lyric-line" data-time="4">Awal terbiasa, berakhir kurasa</div>
-                <div class="lyric-line" data-time="9">Senyuman itu mulai mengalihkan dunia</div>
-                <div class="lyric-line" data-time="15">Setiap detik bersamamu terasa indah</div>
-                <div class="lyric-line" data-time="21">Apakah ini yang dinamakan jatuh cinta?</div>
-                <div class="lyric-line" data-time="27">💝 (Bagian Reff) 💝</div>
-                <div class="lyric-line" data-time="29">Namun kini semua t'lah berbeda</div>
-                <div class="lyric-line" data-time="35">Janji manis kini runtuh tak bersisa</div>
-                <div class="lyric-line" data-time="41">Meninggalkan luka mendalam di dada</div>
-                <div class="lyric-line" data-time="47">Kini ku sendiri... ditemani sepi...</div>
-                <div class="lyric-line" data-time="54">🥀 (Selesai) 🥀</div>
+                
+                <!-- INTRO: Flashback Perjalanan Hidup & Filsafat -->
+                <div class="lyric-line philosophy" data-time="0">"Waktu mengalir, membawa fragmen memori yang tersisa..."</div>
+                <div class="lyric-line philosophy" data-time="4">Menengok ke belakang, hidup dipenuhi persimpangan tak terduga.</div>
+                <div class="lyric-line philosophy" data-time="8">Amor Fati—mencintai takdir, baik duri maupun mawar yang merekah.</div>
+                <div class="lyric-line philosophy" data-time="12">Kini musik dimulai, membawa benak melintasi ruang masa lalu...</div>
+
+                <!-- LIRIK LAGU UTAMA -->
+                <div class="lyric-line" data-time="16">The temple of your body...</div>
+                <div class="lyric-line" data-time="18.5">Is a flicker of a streetlight...</div>
+                <div class="lyric-line" data-time="22">You know this moment, don't you?</div>
+                <div class="lyric-line" data-time="26.5">And time is strangely calm now...</div>
+                <div class="lyric-line" data-time="30">After everybody's gone, it...</div>
+                <div class="lyric-line" data-time="33.5">Tests you and your anger...</div>
+                
+                <div class="lyric-line" data-time="37">Oh, Golden Boy...</div>
+                <div class="lyric-line" data-time="40.5">Don't act like you were kind...</div>
+                <div class="lyric-line" data-time="44.5">You're blind, but you are awful every time...</div>
+                
+                <div class="lyric-line" data-time="51.5">So don't tell them what you told me...</div>
+                <div class="lyric-line" data-time="55.5">Don't hold me like you know me...</div>
+                <div class="lyric-line" data-time="59">I would rather burn forever...</div>
+                
+                <div class="lyric-line" data-time="66">Oh, you should know...</div>
+                <div class="lyric-line" data-time="70">That I die slow...</div>
+                <div class="lyric-line" data-time="73.5">Running through the halls of your haunted home...</div>
+                
+                <div class="lyric-line" data-time="81">And the toughest part...</div>
+                <div class="lyric-line" data-time="84">Is that we both know...</div>
+                <div class="lyric-line" data-time="88">What happened to you...</div>
+                <div class="lyric-line" data-time="91.5">Why you're out on your own...</div>
+                
+                <div class="lyric-line" data-time="95.5">Merry Christmas...</div>
+                <div class="lyric-line" data-time="99.5">Please don't call...</div>
+
+                <!-- INSTRUMEN TENGAH: Jeda Pemikiran Masa Depan -->
+                <div class="lyric-line philosophy" data-time="104">🎵 (Musical Interlude) 🎵</div>
+                <div class="lyric-line philosophy" data-time="112">"Masa lalu sudah runtuh, masa depan belum mewujud."</div>
+                <div class="lyric-line philosophy" data-time="116">Di tengah riuhnya instrumen, aku merenungkan esok hari.</div>
+                <div class="lyric-line philosophy" data-time="120">Kita tidak bisa memilih lembaran awal, namun ujung pena ada di jemari kita.</div>
+
+                <!-- KELANJUTAN LAGU -->
+                <div class="lyric-line" data-time="125">You really left me on the line, kid...</div>
+                <div class="lyric-line" data-time="129">Holding all your baggage...</div>
+                <div class="lyric-line" data-time="132.5">You know no one touch your father...</div>
+                <div class="lyric-line" data-time="136">He said, "Welcome to your up time"...</div>
+                <div class="lyric-line" data-time="140">On the flickers like a streetlight...</div>
+                <div class="lyric-line" data-time="143.5">And flickers through the independent...</div>
+                
+                <div class="lyric-line" data-time="147.5">Oh, Golden Boy...</div>
+                <div class="lyric-line" data-time="151">Shine the light on your own...</div>
+                <div class="lyric-line" data-time="155">And at your best, you were magic...</div>
+                
+                <div class="lyric-line" data-time="162">So don't tell them what you told me...</div>
+                <div class="lyric-line" data-time="166">Don't even tell them that you knew me...</div>
+                <div class="lyric-line" data-time="169.5">I would rather burn forever...</div>
+                
+                <div class="lyric-line" data-time="176.5">Oh, you should know...</div>
+                <div class="lyric-line" data-time="180.5">That I die slow...</div>
+                <div class="lyric-line" data-time="184">Running through the halls of your haunted home...</div>
+                
+                <div class="lyric-line" data-time="191.5">And the toughest part...</div>
+                <div class="lyric-line" data-time="195">Is that we both know...</div>
+                <div class="lyric-line" data-time="199">What happened to you...</div>
+                <div class="lyric-line" data-time="202.5">Why you're out on your own...</div>
+                
+                <div class="lyric-line" data-time="206.5">Merry Christmas...</div>
+                <div class="lyric-line" data-time="210">Please don't call...</div>
+                <div class="lyric-line" data-time="214">Merry Christmas, I'm not yours at all...</div>
+                <div class="lyric-line" data-time="221.5">Merry Christmas...</div>
+                <div class="lyric-line" data-time="225.5">Please don't call...</div>
+                <div class="lyric-line" data-time="229">Please don't call...</div>
+                
+                <!-- OUTRO FILOSOFIS -->
+                <div class="lyric-line philosophy" data-time="236">Menatap masa depan dengan mata jernih...</div>
+                <div class="lyric-line philosophy" data-time="242">"Menjadi bijaksana berarti berani melangkah melewati bayang masa lalu."</div>
+                <div class="lyric-line philosophy" data-time="248">Selesai.</div>
             </div>
         </div>
 
-        <!-- Pemutar Audio Lokal -->
         <audio id="myAudio" controls>
             <source src="audio.mp3" type="audio/mpeg">
             Browser kamu tidak mendukung pemutar audio.
@@ -260,7 +351,7 @@
 
         let currentTheme = 'love';
 
-        // 1. Logika Teks Bergulir Otomatis (Scroll & Highlight)
+        // 1. Logika Teks Bergulir Otomatis yang Presisi
         audio.addEventListener('timeupdate', () => {
             const currentTime = audio.currentTime;
             let activeIndex = -1;
@@ -278,7 +369,6 @@
                 const activeLine = lyricLines[activeIndex];
                 activeLine.classList.add('active');
 
-                // Hitung posisi gulir otomatis agar lirik aktif selalu di tengah
                 const boxHeight = lyricsBox.clientHeight;
                 const lineTop = activeLine.offsetTop;
                 const lineHeight = activeLine.clientHeight;
@@ -288,17 +378,10 @@
                     top: scrollPosition,
                     behavior: 'smooth'
                 });
-
-                // BONUS: Transisi tema otomatis di detik ke-28 saat suasana lagu berubah sedih!
-                if (currentTime >= 28 && currentTheme === 'love') {
-                    switchTheme('heartbreak');
-                } else if (currentTime < 28 && currentTheme === 'heartbreak') {
-                    switchTheme('love');
-                }
             }
         });
 
-        // 2. Interaktif: Klik baris lirik untuk lompat ke detiknya langsung!
+        // 2. Klik lirik langsung loncat ke detik lagu
         lyricLines.forEach(line => {
             line.addEventListener('click', () => {
                 const targetTime = parseFloat(line.getAttribute('data-time'));
@@ -307,7 +390,7 @@
             });
         });
 
-        // 3. Logika Mengubah Tema Suasana Website
+        // 3. Logika Mengubah Tema Suasana Website secara Lembut (Fix Error)
         function switchTheme(theme) {
             currentTheme = theme;
             const btnLove = document.getElementById('btnLove');
@@ -328,6 +411,9 @@
 
         // 4. Efek Animasi Partikel Jatuh & Terbang Bebas
         function createParticle() {
+            // Batasi jumlah partikel di layar agar HP tidak lag
+            if (particleContainer.childElementCount > 25) return;
+
             const particle = document.createElement('div');
             particle.classList.add('particle');
             
@@ -340,15 +426,15 @@
             }
 
             particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
-            particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            particle.style.animationDuration = (Math.random() * 2 + 5) + 's'; 
+            particle.style.fontSize = (Math.random() * 12 + 16) + 'px';
 
             particleContainer.appendChild(particle);
 
-            setTimeout(() => { particle.remove(); }, 7000);
+            setTimeout(() => { particle.remove(); }, 6000);
         }
 
-        setInterval(createParticle, 400);
+        setInterval(createParticle, 500);
     </script>
 </body>
 </html>
