@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melodi Hati - Lagu & Lirik Interaktif</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 1s ease;
+        }
+
+        /* TEMA ANIMASI LATAR BELAKANG */
+        body.theme-love {
+            background: linear-gradient(135deg, #1a0813, #4a1525, #8a2b43);
+        }
+
+        body.theme-heartbreak {
+            background: linear-gradient(135deg, #0b0f19, #1a2238, #404eed);
+        }
+
+        /* Wadah untuk Partikel Efek Terbang */
+        .ambient-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            animation: floatUp 6s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% {
+                transform: translateY(-105vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Kotak Utama Player */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px rgba(255, 255, 255, 0.1) solid;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        .player-header {
+            margin-bottom: 25px;
+        }
+
+        .album-art {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.4);
+            animation: pulse 3s infinite ease-in-out;
+            transition: all 0.5s ease;
+        }
+
+        .theme-heartbreak .album-art {
+            background: linear-gradient(45deg, #4776e6, #8e54e9);
+            box-shadow: 0 10px 25px rgba(71, 118, 230, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .song-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .artist-name {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Tombol Ganti Tema */
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn.active-love {
+            background: #ff416c;
+            box-shadow: 0 0 10px rgba(255, 65, 108, 0.5);
+        }
+
+        .theme-btn.active-break {
+            background: #4776e6;
+            box-shadow: 0 0 10px rgba(71, 118, 230, 0.5);
+        }
+
+        /* Kotak Teks Lirik */
+        .lyrics-box {
+            height: 220px;
+            overflow-y: scroll;
+            margin: 20px 0;
+            padding: 20px 10px;
+            position: relative;
+            mask-image: linear-gradient(to bottom, transparent 0%, white 20%, white 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, white 20%, white 80%, transparent 100%);
+            scrollbar-width: none;
+        }
+
+        .lyrics-box::-webkit-scrollbar { display: none; }
+
+        .lyrics-wrapper {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 70px 0;
+        }
+
+        .lyric-line {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.35);
+            padding: 12px 0;
+            transition: all 0.3s ease;
+            transform: scale(0.95);
+            cursor: pointer;
+        }
+
+        /* Efek Lirik saat Aktif Menyala */
+        .lyric-line.active {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 19px;
+            transform: scale(1.05);
+        }
+
+        .theme-love .lyric-line.active {
+            color: #ff7597;
+            text-shadow: 0 0 15px rgba(255, 117, 151, 0.6);
+        }
+
+        .theme-heartbreak .lyric-line.active {
+            color: #a0c4ff;
+            text-shadow: 0 0 15px rgba(160, 196, 255, 0.6);
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body class="theme-love">
+
+    <!-- Efek Latar Belakang Interaktif -->
+    <div class="ambient-particles" id="particleContainer"></div>
+
+    <div class="container">
+        <div class="player-header">
+            <div class="album-art" id="albumArt">💝</div>
+            <h1 class="song-title">Kisah Hatiku</h1>
+            <p class="artist-name">Nama Penyanyi / Band</p>
+        </div>
+
+        <!-- Tombol untuk testing suasana hati manual -->
+        <div class="theme-switcher">
+            <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Mode Dilanda Cinta 💝</button>
+            <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Mode Patah Hati 💧</button>
+        </div>
+
+        <!-- DAFTAR LIRIK & SETTING WAKTU DETIK -->
+        <div class="lyrics-box" id="lyricsBox">
+            <div class="lyrics-wrapper" id="lyricsWrapper">
+                <!-- Ubah angka data-time (dalam detik) agar pas dengan lagu asli kamu -->
+                <div class="lyric-line" data-time="0">🎵 (Intro Musik) 🎵</div>
+                <div class="lyric-line" data-time="4">Awal terbiasa, berakhir kurasa</div>
+                <div class="lyric-line" data-time="9">Senyuman itu mulai mengalihkan dunia</div>
+                <div class="lyric-line" data-time="15">Setiap detik bersamamu terasa indah</div>
+                <div class="lyric-line" data-time="21">Apakah ini yang dinamakan jatuh cinta?</div>
+                <div class="lyric-line" data-time="27">💝 (Bagian Reff) 💝</div>
+                <div class="lyric-line" data-time="29">Namun kini semua t'lah berbeda</div>
+                <div class="lyric-line" data-time="35">Janji manis kini runtuh tak bersisa</div>
+                <div class="lyric-line" data-time="41">Meninggalkan luka mendalam di dada</div>
+                <div class="lyric-line" data-time="47">Kini ku sendiri... ditemani sepi...</div>
+                <div class="lyric-line" data-time="54">🥀 (Selesai) 🥀</div>
+            </div>
+        </div>
+
+        <!-- Pemutar Audio Lokal -->
+        <audio id="myAudio" controls>
+            <source src="audio.mp3" type="audio/mpeg">
+            Browser kamu tidak mendukung pemutar audio.
+        </audio>
+    </div>
+
+    <script>
+        const audio = document.getElementById('myAudio');
+        const lyricsBox = document.getElementById('lyricsBox');
+        const lyricLines = document.querySelectorAll('.lyric-line');
+        const particleContainer = document.getElementById('particleContainer');
+        const albumArt = document.getElementById('albumArt');
+
+        let currentTheme = 'love';
+
+        // 1. Logika Teks Bergulir Otomatis (Scroll & Highlight)
+        audio.addEventListener('timeupdate', () => {
+            const currentTime = audio.currentTime;
+            let activeIndex = -1;
+
+            for (let i = 0; i < lyricLines.length; i++) {
+                if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) {
+                    activeIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (activeIndex !== -1) {
+                lyricLines.forEach(line => line.classList.remove('active'));
+                const activeLine = lyricLines[activeIndex];
+                activeLine.classList.add('active');
+
+                // Hitung posisi gulir otomatis agar lirik aktif selalu di tengah
+                const boxHeight = lyricsBox.clientHeight;
+                const lineTop = activeLine.offsetTop;
+                const lineHeight = activeLine.clientHeight;
+                
+                const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
+                lyricsBox.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth'
+                });
+
+                // BONUS: Transisi tema otomatis di detik ke-28 saat suasana lagu berubah sedih!
+                if (currentTime >= 28 && currentTheme === 'love') {
+                    switchTheme('heartbreak');
+                } else if (currentTime < 28 && currentTheme === 'heartbreak') {
+                    switchTheme('love');
+                }
+            }
+        });
+
+        // 2. Interaktif: Klik baris lirik untuk lompat ke detiknya langsung!
+        lyricLines.forEach(line => {
+            line.addEventListener('click', () => {
+                const targetTime = parseFloat(line.getAttribute('data-time'));
+                audio.currentTime = targetTime;
+                if(audio.paused) audio.play();
+            });
+        });
+
+        // 3. Logika Mengubah Tema Suasana Website
+        function switchTheme(theme) {
+            currentTheme = theme;
+            const btnLove = document.getElementById('btnLove');
+            const btnBreak = document.getElementById('btnBreak');
+
+            if (theme === 'love') {
+                document.body.className = 'theme-love';
+                albumArt.innerText = '💝';
+                btnLove.classList.add('active-love');
+                btnBreak.classList.remove('active-break');
+            } else {
+                document.body.className = 'theme-heartbreak';
+                albumArt.innerText = '💧';
+                btnBreak.classList.add('active-break');
+                btnLove.classList.remove('active-love');
+            }
+        }
+
+        // 4. Efek Animasi Partikel Jatuh & Terbang Bebas
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            if (currentTheme === 'love') {
+                const loveSymbols = ['💝', '💖', '✨', '🌸', '💕'];
+                particle.innerText = loveSymbols[Math.floor(Math.random() * loveSymbols.length)];
+            } else {
+                const sadSymbols = ['💧', '🌧️', '🖤', '💔', '❄️'];
+                particle.innerText = sadSymbols[Math.floor(Math.random() * sadSymbols.length)];
+            }
+
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
+            particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+
+            particleContainer.appendChild(particle);
+
+            setTimeout(() => { particle.remove(); }, 7000);
+        }
+
+        setInterval(createParticle, 400);
+    </script>
+</body>
+</html>
