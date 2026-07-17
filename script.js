@@ -43,30 +43,13 @@ let dataUserSekarang = { nickname: "", nomorKado: null, pertanyaanDapat: "", jaw
 let selectedOptionIndex = null;
 
 // --- AUDIO CONTROLLER ENGINE ---
-function toggleAudio() {
-    if (!audio) return;
-    if (audio.paused) {
-        audio.play().then(() => {
-            audioToggleBtn.innerText = "Pause ⏸";
-            audioToggleBtn.classList.add('playing');
-        }).catch(err => {
-            alert("Error: Gagal memutar berkas audio. Pastikan berkas bernama audio.mp3 sudah berada di root repositori GitHub kamu.");
-        });
-    } else {
-        audio.pause();
-        audioToggleBtn.innerText = "Play ▶";
-        audioToggleBtn.classList.remove('playing');
-    }
-}
-
-// --- AUDIO CONTROLLER ENGINE & SMART FREE SCROLL ---
+// --- AUDIO CONTROLLER ENGINE & SPOTIFY STYLE FREE SCROLL ---
 let isUserScrolling = false;
 let userScrollTimeout = null;
 
-// Deteksi jika user melakukan scroll manual di dalam lyricsBox
 if (lyricsBox) {
+    // Mendeteksi interaksi scroll manual dari pengguna
     lyricsBox.addEventListener('scroll', () => {
-        // Jika trigger scroll bukan dari sistem (smooth scroll otomatis)
         if (!lyricsBox.classList.contains('system-scrolling')) {
             isUserScrolling = true;
             
@@ -74,7 +57,7 @@ if (lyricsBox) {
             clearTimeout(userScrollTimeout);
             userScrollTimeout = setTimeout(() => {
                 isUserScrolling = false;
-            }, 3500); // 3.5 detik setelah geser manual selesai, autoscroll aktif lagi
+            }, 4000); // Memberikan jeda 4 detik sebelum otomatis kembali mengikuti lagu
         }
     });
 }
@@ -101,6 +84,7 @@ if (audio) {
         const currentTime = audio.currentTime;
         let activeIndex = -1;
 
+        // Mencari lirik yang sesuai dengan waktu lagu berjalan
         for (let i = 0; i < lyricLines.length; i++) {
             if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) {
                 activeIndex = i;
@@ -110,20 +94,21 @@ if (audio) {
         }
 
         if (activeIndex !== -1 && lyricsBox) {
-            // Tetap update class active agar lirik yang sedang bernyanyi tetap berubah warna
             lyricLines.forEach(line => line.classList.remove('active'));
             const activeLine = lyricLines[activeIndex];
             activeLine.classList.add('active');
             
-            // JIKA user tidak sedang menggeser lirik bebas, lakukan autoscroll secara halus
+            // Logika Scroll Otomatis Gaya Spotify (Tepat di tengah-tengah box lirik)
             if (!isUserScrolling) {
-                const scrollPosition = activeLine.offsetTop - (lyricsBox.clientHeight / 2) + (activeLine.clientHeight / 2);
+                // Menghitung titik tengah box lirik agar transisi terasa mengalir pas
+                const boxHeight = lyricsBox.clientHeight;
+                const lineTop = activeLine.offsetTop;
+                const lineHeight = activeLine.clientHeight;
+                const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
                 
-                // Beri penanda bahwa ini scroll dari sistem agar tidak bentrok dengan detektor manual
                 lyricsBox.classList.add('system-scrolling');
                 lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
                 
-                // Hapus penanda setelah animasi scroll selesai
                 setTimeout(() => {
                     lyricsBox.classList.remove('system-scrolling');
                 }, 400); 
@@ -132,8 +117,7 @@ if (audio) {
     });
 }
 
-
-// --- SUB-SISTEM ALUR MODAL KUESIONER ---
+// --- SUB-SISTEM ALUR MODAL KUESIONER (FIXED NO REFRESH) ---
 function startMysteryFlow() {
     document.getElementById('nameOverlay').classList.add('show');
     
@@ -245,10 +229,22 @@ function saveAndNext(tipe) {
     });
 }
 
+// PERBAIKAN: Menutup overlay tanpa mereset/refresh halaman agar lagu tidak berhenti
 function closeMysterySystem() {
     document.getElementById('questionOverlay').classList.remove('show');
-    location.reload(); 
+    
+    // Kembalikan isi kontainer kado ke kondisi awal agar bisa dimainkan lagi nanti tanpa refresh
+    setTimeout(() => {
+        const cardMisteri = document.getElementById('dynamicMysteryCard');
+        cardMisteri.innerHTML = `
+            <div class="gift-opening-animation" id="giftAnimate">🎁</div>
+            <div class="question-container" id="questionContainer"></div>
+        `;
+        // Acak ulang pertanyaan untuk sesi berikutnya jika diinginkan
+        indeksPertanyaanSekarang = (indeksPertanyaanSekarang + 1) % pertanyaanTeracak.length;
+    }, 400);
 }
+
 
 // --- EFEK KLIK TEKS MELAYANG RANCANGAN AWAL ---
 window.addEventListener('click', (e) => {
