@@ -8,29 +8,80 @@
 </head>
 <body class="theme-love">
 
+    <!-- Efek Partikel Latar Belakang Rancangan Awal -->
     <div class="ambient-particles" id="particleContainer"></div>
     <div class="tokyo-skyline"></div>
 
     <!-- MAIN MUSIC CONTAINER -->
     <div class="container" id="musicContainer">
         <div class="album-art" id="albumArt">💝</div>
-        <div class="song-title">Nama Lagu Kamu</div>
-        <div class="artist-name">Nama Artis / Penyanyi</div>
+        <div class="song-title">Golden Boy</div>
+        <div class="artist-name">Music Player</div>
 
+        <!-- Sistem Switcher Tema Awal -->
         <div class="theme-switcher">
             <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Blueberry</button>
             <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Strawberry</button>
         </div>
 
-        <!-- Tombol pemicu misteri yang sudah diperbaiki fungsinya -->
+        <!-- Tombol Pemicu Sistem Kado -->
         <button class="popup-trigger-btn" onclick="startMysteryFlow()">✨ Buka Misteri ✨</button>
 
+        <!-- Box Lirik Otomatis (Sudah Sinkron dengan Lagu Golden Boy) -->
         <div class="lyrics-box" id="lyricsBox">
-            <div class="lyrics-wrapper">
-                <div class="lyric-line" data-time="0">Baris lirik pertama lagu disini...</div>
-                <div class="lyric-line" data-time="5">Baris lirik kedua mengalir indah...</div>
-                <div class="lyric-line" data-time="10">Menyusuri waktu yang terus berjalan...</div>
-                <div class="lyric-line" data-time="15">Hingga akhir kita dipertemukan...</div>
+            <div class="lyrics-wrapper" id="lyricsWrapper">
+                <div class="lyric-line" data-time="0">🎵 (Intro Instrumental) 🎵</div>
+                <div class="lyric-line" data-time="9">To the tempo of your uptight</div>
+                <div class="lyric-line" data-time="13">Is the flicker of a streetlight</div>
+                <div class="lyric-line" data-time="17">You know this moment, don't you?</div>
+                <div class="lyric-line" data-time="22">And time is strangely calm now</div>
+                <div class="lyric-line" data-time="26">'Cause everybody's gone</div>
+                <div class="lyric-line" data-time="30">It's just you and your anger</div>
+                <div class="lyric-line" data-time="33">Oh, golden boy, don't act like you were kind</div>
+                <div class="lyric-line" data-time="40">You were mine, but you were awful every time</div>
+                <div class="lyric-line" data-time="48">So don't tell them what you told me</div>
+                <div class="lyric-line" data-time="52">Don't hold me like you know me</div>
+                <div class="lyric-line" data-time="56">I would rather burn forever</div>
+                <div class="lyric-line" data-time="60">But you should know that I died slow</div>
+                <div class="lyric-line" data-time="63">Running through the halls of your haunted home</div>
+                <div class="lyric-line" data-time="68">And the toughest part is that we both know</div>
+                <div class="lyric-line" data-time="72">What happened to you</div>
+                <div class="lyric-line" data-time="74">Why you're out on your own</div>
+                <div class="lyric-line" data-time="76">Merry Christmas, please don't call</div>
+                <div class="lyric-line" data-time="80">🎵 (Instrumental Break) 🎵</div>
+                <div class="lyric-line" data-time="93">You really left me on the line, kid</div>
+                <div class="lyric-line" data-time="97">Holding all your baggage</div>
+                <div class="lyric-line" data-time="101">You know I'm not your father</div>
+                <div class="lyric-line" data-time="105">Who says, "Welcome to your uptight"</div>
+                <div class="lyric-line" data-time="109">While it flickers like a streetlight</div>
+                <div class="lyric-line" data-time="113">He flickers through your damage</div>
+                <div class="lyric-line" data-time="117">Oh, golden boy, you shined a light on your home</div>
+                <div class="lyric-line" data-time="123">And at your best, you were magic, we were sold</div>
+                <div class="lyric-line" data-time="131">But don't tell 'em what you told me</div>
+                <div class="lyric-line" data-time="135">Don't even tell 'em that you know me</div>
+                <div class="lyric-line" data-time="139">I would rather burn forever</div>
+                <div class="lyric-line" data-time="143">But you should know that I died slow</div>
+                <div class="lyric-line" data-time="146">Running through the halls of your haunted home</div>
+                <div class="lyric-line" data-time="151">And the toughest part is that we both know</div>
+                <div class="lyric-line" data-time="155">What happened to you</div>
+                <div class="lyric-line" data-time="157">Why you're out on your own</div>
+                <div class="lyric-line" data-time="159">Merry Christmas, please don't call</div>
+                <div class="lyric-line" data-time="163">Just one ticket out of your heavy gaze</div>
+                <div class="lyric-line" data-time="167">I want one ticket off of your carousel</div>
+                <div class="lyric-line" data-time="171">I want one ticket out of your heavy gaze</div>
+                <div class="lyric-line" data-time="175">I want one ticket off of your carousel</div>
+                <div class="lyric-line" data-time="179">But you should know that I die slow</div>
+                <div class="lyric-line" data-time="182">Running through the halls of your haunted home</div>
+                <div class="lyric-line" data-time="187">And the toughest part is that we both know</div>
+                <div class="lyric-line" data-time="191">What happened to you</div>
+                <div class="lyric-line" data-time="193">Why you're out on your own</div>
+                <div class="lyric-line" data-time="195">Merry Christmas, please don't call</div>
+                <div class="lyric-line" data-time="199">Merry Christmas, I'm not yours at all</div>
+                <div class="lyric-line" data-time="204">Merry Christmas, please don't call me</div>
+                <div class="lyric-line" data-time="208">Please don't call me</div>
+                <div class="lyric-line" data-time="212">Please don't call me</div>
+                <div class="lyric-line" data-time="216">Please don't call me</div>
+                <div class="lyric-line" data-time="220">🎵 (Outro Instrumental) 🎵</div>
             </div>
         </div>
 
@@ -40,8 +91,6 @@
     </div>
 
     <!-- ================= SUB-SYSTEM MISTERI KADO ================= -->
-    
-    <!-- Lapis 1: Input Nama -->
     <div class="mystery-overlay" id="nameOverlay">
         <div class="mystery-card">
             <h3>Sebelum memulai misteri...</h3>
@@ -51,36 +100,22 @@
         </div>
     </div>
 
-    <!-- Lapis 2: 9 Kotak Kado -->
     <div class="mystery-overlay" id="giftOverlay">
         <div class="mystery-card wide-card">
             <h3>Pilih Salah Satu Kado Misteri</h3>
             <p>Pilihanmu akan menentukan pertanyaan hidup/cinta yang kamu dapatkan.</p>
-            <div class="gift-grid">
-                <div class="gift-box" onclick="selectGift(1)">🎁<span>1</span></div>
-                <div class="gift-box" onclick="selectGift(2)">🎁<span>2</span></div>
-                <div class="gift-box" onclick="selectGift(3)">🎁<span>3</span></div>
-                <div class="gift-box" onclick="selectGift(4)">🎁<span>4</span></div>
-                <div class="gift-box" onclick="selectGift(5)">🎁<span>5</span></div>
-                <div class="gift-box" onclick="selectGift(6)">🎁<span>6</span></div>
-                <div class="gift-box" onclick="selectGift(7)">🎁<span>7</span></div>
-                <div class="gift-box" onclick="selectGift(8)">🎁<span>8</span></div>
-                <div class="gift-box" onclick="selectGift(9)">🎁<span>9</span></div>
-            </div>
+            <div class="gift-grid" id="giftGrid"></div>
         </div>
     </div>
 
-    <!-- Lapis 3: Tampilan Pertanyaan & Thank You -->
     <div class="mystery-overlay" id="questionOverlay">
         <div class="mystery-card" id="dynamicMysteryCard">
             <div class="gift-opening-animation" id="giftAnimate">🎁</div>
-            <div class="question-container" id="questionContainer">
-                <!-- Pertanyaan dimasukkan via JS -->
-            </div>
+            <div class="question-container" id="questionContainer"></div>
         </div>
     </div>
 
-    <audio id="myAudio" src="lagu.mp3"></audio>
+    <audio id="myAudio" src="audio.mp3"></audio>
 
     <script src="script.js"></script>
 </body>

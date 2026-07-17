@@ -1,21 +1,20 @@
-// ISI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU
-const GOOGLE_SCRIPT_URL = "PASTE_URL_WEB_APP_KAMU_DI_SINI";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqXtpz0peSHEoMolnrNpuYA1q1c0eyCPAPn56g-87bGRrka2gj8fMiKmpjApMXxFfZ/exec";
 
 const audio = document.getElementById('myAudio');
 const audioToggleBtn = document.getElementById('audioToggleBtn');
 const lyricsBox = document.getElementById('lyricsBox');
-const lyricLines = document.querySelectorAll('.lyric-line');
 const particleContainer = document.getElementById('particleContainer');
 const albumArt = document.getElementById('albumArt');
 
 let currentTheme = 'love';
 
+// Database Kata Klik Rancangan Awal Berdasarkan Tema
 const wordsData = {
     love: ["misteri", "waktu", "rasa", "merah", "melodi", "flicker", "hati", "tenang", "berlari"],
     heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing"]
 };
 
-// 9 Daftar Pertanyaan Karakter Hidup / Percintaan
+// 9 Daftar Pertanyaan Kuesioner Karakter Hidup / Percintaan
 const listPertanyaan = [
     { id: 1, tipe: "pilihan", tanya: "Jika cinta adalah sebuah ruang, mana situasi yang paling menggambarkan dirimu saat ini?", opsi: ["Penuh kehangatan, namun pintunya terkunci rapat.", "Jendelanya terbuka lebar, siap menerima siapa saja.", "Kosong dan berdebu, malas untuk merawatnya lagi.", "Sedang sibuk merenovasi struktur fondasi diri."] },
     { id: 2, tipe: "pilihan", tanya: "Saat seseorang yang berharga perlahan berubah menjadi asing, apa tindakan spontanmu?", opsi: ["Mengejarnya mati-matian mencari penjelasan.", "Mundur perlahan tanpa sepatah kata pun.", "Berpura-pura tidak peduli padahal mengawasi dari jauh.", "Menerima keadaan dengan cepat karena logis."] },
@@ -28,7 +27,7 @@ const listPertanyaan = [
     { id: 9, tipe: "essay", tanya: "Sebutkan satu sifat atau kebiasaan burukmu dalam hubungan yang saat ini sedang coba kamu perbaiki secara mandiri." }
 ];
 
-// Algoritma Pengacakan Pertanyaan (Fisher-Yates Shuffle)
+// Algoritma Pengacakan Pertanyaan Otomatis (Fisher-Yates Shuffle)
 function acakPertanyaan(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -37,16 +36,63 @@ function acakPertanyaan(array) {
     return array;
 }
 
-// Eksekusi pengacakan otomatis saat halaman dimuat/refresh
 const pertanyaanTeracak = acakPertanyaan([...listPertanyaan]);
 let indeksPertanyaanSekarang = 0;
 
 let dataUserSekarang = { nickname: "", nomorKado: null, pertanyaanDapat: "", jawabanUser: "" };
 let selectedOptionIndex = null;
 
-// --- REGULASI ALUR KUESIONER ---
+// --- AUDIO CONTROLLER ENGINE ---
+function toggleAudio() {
+    if (!audio) return;
+    if (audio.paused) {
+        audio.play().then(() => {
+            audioToggleBtn.innerText = "Pause ⏸";
+            audioToggleBtn.classList.add('playing');
+        }).catch(err => {
+            alert("Error: Gagal memutar berkas audio. Pastikan berkas bernama audio.mp3 sudah berada di root repositori GitHub kamu.");
+        });
+    } else {
+        audio.pause();
+        audioToggleBtn.innerText = "Play ▶";
+        audioToggleBtn.classList.remove('playing');
+    }
+}
+
+if (audio) {
+    audio.addEventListener('timeupdate', () => {
+        const lyricLines = document.querySelectorAll('.lyric-line');
+        const currentTime = audio.currentTime;
+        let activeIndex = -1;
+
+        for (let i = 0; i < lyricLines.length; i++) {
+            if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) {
+                activeIndex = i;
+            } else {
+                break;
+            }
+        }
+
+        if (activeIndex !== -1 && lyricsBox) {
+            lyricLines.forEach(line => line.classList.remove('active'));
+            const activeLine = lyricLines[activeIndex];
+            activeLine.classList.add('active');
+            
+            const scrollPosition = activeLine.offsetTop - (lyricsBox.clientHeight / 2) + (activeLine.clientHeight / 2);
+            lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+        }
+    });
+}
+
+// --- SUB-SISTEM ALUR MODAL KUESIONER ---
 function startMysteryFlow() {
     document.getElementById('nameOverlay').classList.add('show');
+    
+    const grid = document.getElementById('giftGrid');
+    grid.innerHTML = "";
+    for (let i = 1; i <= 9; i++) {
+        grid.innerHTML += `<div class="gift-box" onclick="selectGift(${i})">🎁<span>${i}</span></div>`;
+    }
 }
 
 function submitName() {
@@ -77,7 +123,6 @@ function setupPertanyaan() {
     qContainer.innerHTML = "";
     selectedOptionIndex = null;
 
-    // Mengambil item pertama dari database yang telah diacak
     const currentQ = pertanyaanTeracak[indeksPertanyaanSekarang];
     dataUserSekarang.pertanyaanDapat = currentQ.tanya;
 
@@ -125,7 +170,6 @@ function saveAndNext(tipe) {
 
     dataUserSekarang.waktu = new Date().toLocaleString('id-ID');
 
-    // MENGIRIM DATA KE BACKEND GOOGLE SHEETS secara REAL-TIME
     fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
@@ -133,21 +177,20 @@ function saveAndNext(tipe) {
         body: JSON.stringify(dataUserSekarang)
     })
     .then(() => {
-        // MENGUBAH TAMPILAN MENJADI HALAMAN PENUTUP (THANK YOU)
         const cardMisteri = document.getElementById('dynamicMysteryCard');
         cardMisteri.innerHTML = `
             <div style="padding: 20px 10px;">
                 <h3 style="color: #ff416c; font-size: 24px; margin-bottom: 12px;">Thank You! ✨</h3>
                 <p style="color: rgba(255,255,255,0.75); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
                     Terima kasih banyak, <b>${dataUserSekarang.nickname}</b>. <br>
-                    Pandangan dan jawaban misterimu sudah tersimpan dengan aman langsung ke dalam memori.
+                    Jawaban misterimu sudah berhasil tersimpan dengan aman ke database.
                 </p>
-                <button class="mystery-btn-main" onclick="closeMysterySystem()">Kembali Mendengar Musik</button>
+                <button class="mystery-btn-main" onclick="closeMysterySystem()">Kembali</button>
             </div>
         `;
     })
     .catch(err => {
-        alert("Gagal mengirim data. Coba cek koneksi internet atau set up URL Script kamu.");
+        alert("Gagal mengirim data. Coba cek koneksi internet.");
         btnLanjut.innerText = "Lanjut";
         btnLanjut.disabled = false;
     });
@@ -155,67 +198,67 @@ function saveAndNext(tipe) {
 
 function closeMysterySystem() {
     document.getElementById('questionOverlay').classList.remove('show');
-    // Refresh halaman agar struktur tereset penuh dan siap diacak ulang
     location.reload(); 
 }
 
-// --- CORE AUDIO PLAYER & PARTICLE SYSTEM ---
+// --- EFEK KLIK TEKS MELAYANG RANCANGAN AWAL ---
 window.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line')) return;
+    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
+    
     const wordEl = document.createElement('div');
     wordEl.classList.add('click-word');
+    
     const activeWords = wordsData[currentTheme];
     const randomWord = activeWords[Math.floor(Math.random() * activeWords.length)];
+    
     wordEl.innerText = randomWord;
     wordEl.style.color = currentTheme === 'love' ? `hsl(${340 + Math.random() * 20}, 100%, 75%)` : `hsl(${210 + Math.random() * 20}, 100%, 75%)`;
-    wordEl.style.left = e.clientX + 'px'; wordEl.style.top = e.clientY + 'px';
+    wordEl.style.left = e.clientX + 'px';
+    wordEl.style.top = e.clientY + 'px';
+    
     document.body.appendChild(wordEl);
     setTimeout(() => { wordEl.remove(); }, 2000);
 });
 
-function toggleAudio() {
-    if (!audio) return;
-    if (audio.paused) { audio.play().catch(() => {}); audioToggleBtn.innerText = "Pause ⏸"; audioToggleBtn.classList.add('playing'); } 
-    else { audio.pause(); audioToggleBtn.innerText = "Play ▶"; audioToggleBtn.classList.remove('playing'); }
-}
-
-if (audio) {
-    audio.addEventListener('timeupdate', () => {
-        const currentTime = audio.currentTime; let activeIndex = -1;
-        for (let i = 0; i < lyricLines.length; i++) { if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) { activeIndex = i; } else { break; } }
-        if (activeIndex !== -1 && lyricsBox) {
-            lyricLines.forEach(line => line.classList.remove('active'));
-            const activeLine = lyricLines[activeIndex]; activeLine.classList.add('active');
-            const scrollPosition = activeLine.offsetTop - (lyricsBox.clientHeight / 2) + (activeLine.clientHeight / 2);
-            lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-        }
-    });
-}
-
+// --- PENGGANTI TEMA RANCANGAN AWAL ---
 function switchTheme(theme) {
     currentTheme = theme;
     if (particleContainer) particleContainer.innerHTML = '';
     if (theme === 'love') {
-        document.body.className = 'theme-love'; if (albumArt) albumArt.innerText = '💝';
-        document.getElementById('btnLove').classList.add('active-love'); document.getElementById('btnBreak').classList.remove('active-break');
+        document.body.className = 'theme-love';
+        if (albumArt) albumArt.innerText = '💝';
+        document.getElementById('btnLove').classList.add('active-love');
+        document.getElementById('btnBreak').classList.remove('active-break');
     } else {
-        document.body.className = 'theme-heartbreak'; if (albumArt) albumArt.innerText = '💧';
-        document.getElementById('btnBreak').classList.add('active-break'); document.getElementById('btnLove').classList.remove('active-love');
+        document.body.className = 'theme-heartbreak';
+        if (albumArt) albumArt.innerText = '💧';
+        document.getElementById('btnBreak').classList.add('active-break');
+        document.getElementById('btnLove').classList.remove('active-love');
     }
 }
 
+// --- GENERATOR PARTIKEL JALAN OTOMATIS ---
 function createParticle() {
     if (!particleContainer || particleContainer.childElementCount > 25) return;
     const particle = document.createElement('div');
     if (currentTheme === 'love') {
-        particle.classList.add('particle-love'); const size = Math.random() * 12 + 8;
-        particle.style.width = size + 'px'; particle.style.height = size + 'px';
-        if (Math.random() > 0.4) { particle.innerHTML = "<span style='color: rgba(255,75,107,0.3); font-size:12px;'>❤️</span>"; particle.style.background = "none"; }
-        particle.style.left = Math.random() * 95 + 'vw'; particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        particle.classList.add('particle-love');
+        const size = Math.random() * 12 + 8;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        if (Math.random() > 0.4) {
+            particle.innerHTML = "<span style='color: rgba(255,75,107,0.3); font-size:12px;'>❤️</span>";
+            particle.style.background = "none";
+        }
+        particle.style.left = Math.random() * 95 + 'vw';
+        particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
     } else {
-        particle.classList.add('particle-snow'); const size = Math.random() * 4 + 2;
-        particle.style.width = size + 'px'; particle.style.height = size + 'px';
-        particle.style.left = Math.random() * 95 + 'vw'; particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        particle.classList.add('particle-snow');
+        const size = Math.random() * 4 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 95 + 'vw';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
     }
     particleContainer.appendChild(particle);
     setTimeout(() => { particle.remove(); }, 6000);

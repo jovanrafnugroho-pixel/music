@@ -8,7 +8,6 @@ body {
     overflow: hidden; position: relative; transition: background 1.2s ease;
 }
 
-/* --- ANIMASI BACKGROUND BERGERAK --- */
 body.theme-love {
     background: linear-gradient(45deg, #180511, #3d101e, #1c0512, #4a1225);
     background-size: 400% 400%; animation: gradientMove 15s ease infinite;
@@ -23,7 +22,6 @@ body.theme-heartbreak {
     100% { background-position: 0% 50%; }
 }
 
-/* --- ANIMASI KATA MELAYANG SAAT DIKLIK --- */
 .click-word {
     position: fixed; pointer-events: none; font-size: 14px; font-weight: 600;
     letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
@@ -48,7 +46,6 @@ body.theme-heartbreak {
 .particle-snow { position: absolute; top: -20px; background: rgba(255, 255, 255, 0.8); border-radius: 50%; box-shadow: 0 0 6px #ffffff; animation: fallDown 5s linear infinite; }
 @keyframes fallDown { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 0.7; } 85% { opacity: 0.7; } 100% { transform: translateY(110vh) translateX(-30px); opacity: 0; } }
 
-/* --- MUSIC BOX CONTAINER --- */
 .container {
     width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px rgba(255, 255, 255, 0.1) solid; border-radius: 24px; padding: 25px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); z-index: 10; text-align: center;
@@ -66,11 +63,11 @@ body.theme-heartbreak {
 .popup-trigger-btn { background: rgba(255, 255, 255, 0.12); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 24px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: 0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
 .popup-trigger-btn:hover { background: white; color: black; }
 
-.lyrics-box { height: 200px; overflow-y: scroll; margin: 10px 0; position: relative; mask-image: linear-gradient(to bottom, transparent 0%, white 25%, white 75%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, white 25%, white 75%, transparent 100%); scrollbar-width: none; }
+.lyrics-box { height: 160px; overflow-y: auto; margin: 20px 0; position: relative; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); scrollbar-width: none; }
 .lyrics-box::-webkit-scrollbar { display: none; }
-.lyrics-wrapper { transition: transform 0.4s ease; padding: 85px 0; }
-.lyric-line { font-size: 14px; color: rgba(255, 255, 255, 0.2); padding: 10px 0; transition: all 0.3s; transform: scale(0.95); cursor: pointer; }
-.lyric-line.active { color: #ffffff; font-weight: 600; font-size: 17px; transform: scale(1.02); }
+.lyrics-wrapper { padding: 50px 0; transition: transform 0.4s ease; }
+.lyric-line { font-size: 14px; color: rgba(255, 255, 255, 0.25); padding: 8px 0; transition: all 0.3s; transform: scale(0.95); }
+.lyric-line.active { color: #ffffff; font-weight: 600; font-size: 16px; transform: scale(1.03); text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
 .theme-love .lyric-line.active { color: #ff7597; }
 .theme-heartbreak .lyric-line.active { color: #90b4ec; }
 
@@ -79,14 +76,12 @@ body.theme-heartbreak {
 .audio-toggle-btn.playing { background: #ff416c; border-color: transparent; }
 .theme-heartbreak .audio-toggle-btn.playing { background: #3a7bd5; border-color: transparent; }
 
-/* ================= CSS LAYOUT MISTERI KADO ================= */
 .mystery-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(8, 5, 15, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    z-index: 1000; display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+    z-index: 1000; display: none; align-items: center; justify-content: center;
 }
-.mystery-overlay.show { opacity: 1; pointer-events: auto; }
+.mystery-overlay.show { display: flex; }
 
 .mystery-card {
     background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
@@ -94,18 +89,16 @@ body.theme-heartbreak {
     text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
 }
 .mystery-card.wide-card { max-width: 500px; }
-.mystery-card h3 { font-size: 22px; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px; }
+.mystery-card h3 { font-size: 22px; margin-bottom: 10px; font-weight: 700; }
 .mystery-card p { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
 
 .mystery-card input[type="text"] {
     width: 100%; padding: 12px 20px; background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
-    color: white; font-size: 15px; outline: none; text-align: center;
-    margin-bottom: 20px; transition: 0.3s;
+    color: white; font-size: 15px; outline: none; text-align: center; margin-bottom: 20px;
 }
 .mystery-card input[type="text"]:focus { border-color: #ff416c; background: rgba(255,255,255,0.1); }
 
-/* Grid Kado */
 .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px; }
 .gift-box {
     background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
@@ -115,7 +108,6 @@ body.theme-heartbreak {
 .gift-box span { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: bold; margin-top: 5px; }
 .gift-box:hover { transform: translateY(-5px) scale(1.05); background: rgba(255, 255, 255, 0.12); border-color: rgba(255,255,255,0.3); }
 
-/* Animasi Kado */
 .gift-opening-animation { font-size: 70px; margin-bottom: 15px; display: inline-block; }
 .wobble-animate { animation: wobble 0.5s ease 3; }
 .open-animate { animation: openGift 0.6s ease forwards; }
@@ -131,7 +123,6 @@ body.theme-heartbreak {
     100% { transform: scale(1); opacity: 0; height: 0; margin: 0; overflow: hidden; }
 }
 
-/* Pertanyaan & Form */
 .question-container { opacity: 0; transition: opacity 0.5s ease; text-align: left; }
 .question-container.show { opacity: 1; }
 .question-text { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; text-align: center; color: #fff; }
@@ -139,10 +130,9 @@ body.theme-heartbreak {
 .option-btn {
     width: 100%; padding: 12px 15px; background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-    color: rgba(255,255,255,0.85); text-align: left; font-size: 13px;
-    cursor: pointer; margin-bottom: 10px; transition: all 0.2s;
+    color: rgba(255,255,255,0.85); text-align: left; font-size: 13px; cursor: pointer; margin-bottom: 10px; transition: 0.2s;
 }
-.option-btn:hover { background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.3); }
+.option-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.3); }
 .option-btn.selected { background: #ff416c; color: white; border-color: transparent; font-weight: 600; }
 
 .essay-input {
@@ -150,12 +140,10 @@ body.theme-heartbreak {
     border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
     color: white; font-size: 13px; outline: none; resize: none; margin-bottom: 15px; font-family: inherit;
 }
-.essay-input:focus { border-color: #ff416c; }
-
 .mystery-btn-main {
     background: #ff416c; color: white; border: none; padding: 12px 35px;
     border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;
     transition: 0.3s; display: block; margin: 15px auto 0;
 }
 .mystery-btn-main:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); }
-.mystery-btn-main:disabled { background: #555; cursor: not-allowed; transform: none; box-shadow: none; }
+.mystery-btn-main:disabled { background: #555; cursor: not-allowed; }
