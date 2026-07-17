@@ -3,123 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodi Hati - Golden Boy</title>
-    <!-- Pastikan file style.css ada di folder yang sama -->
+    <title>Music Player & Mystery Box</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-love">
 
-    <!-- Siluet Kota Tokyo Modern -->
+    <div class="ambient-particles" id="particleContainer"></div>
     <div class="tokyo-skyline"></div>
 
-    <!-- Wadah Efek Partikel Latar Belakang -->
-    <div class="ambient-particles" id="particleContainer"></div>
-
-    <!-- Kotak Pemutar Musik Utama -->
-    <div class="container">
-        <div class="player-header">
-            <div class="album-art" id="albumArt">💝</div>
-            <h1 class="song-title">Golden Boy</h1>
-            <p class="artist-name">Elf Power</p>
-        </div>
+    <!-- MAIN MUSIC CONTAINER -->
+    <div class="container" id="musicContainer">
+        <div class="album-art" id="albumArt">💝</div>
+        <div class="song-title">Nama Lagu Kamu</div>
+        <div class="artist-name">Nama Artis / Penyanyi</div>
 
         <div class="theme-switcher">
-            <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Red 💝</button>
-            <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Blue 💧</button>
+            <button class="theme-btn active-love" id="btnLove" onclick="switchTheme('love')">Blueberry</button>
+            <button class="theme-btn" id="btnBreak" onclick="switchTheme('heartbreak')">Strawberry</button>
         </div>
 
-        <!-- Tombol Pemicu Pop-Up Misteri -->
-        <button class="popup-trigger-btn" onclick="toggleModal(true)">Misteri 🔍</button>
+        <!-- Tombol pemicu misteri yang sudah diperbaiki fungsinya -->
+        <button class="popup-trigger-btn" onclick="startMysteryFlow()">✨ Buka Misteri ✨</button>
 
-        <!-- Kotak Lirik Berjalan -->
         <div class="lyrics-box" id="lyricsBox">
-            <div class="lyrics-wrapper" id="lyricsWrapper">
-                <div class="lyric-line" data-time="0">🎵 (Instrumental Intro) 🎵</div>
-                <div class="lyric-line" data-time="16">The temple of your body...</div>
-                <div class="lyric-line" data-time="18.5">Is a flicker of a streetlight...</div>
-                <div class="lyric-line" data-time="22">You know this moment, don't you?</div>
-                <div class="lyric-line" data-time="26.5">And time is strangely calm now...</div>
-                <div class="lyric-line" data-time="30">After everybody's gone, it...</div>
-                <div class="lyric-line" data-time="33.5">Tests you and your anger...</div>
-                <div class="lyric-line" data-time="37">Oh, Golden Boy...</div>
-                <div class="lyric-line" data-time="40.5">Don't act like you were kind...</div>
-                <div class="lyric-line" data-time="44.5">You're blind, but you are awful every time...</div>
-                <div class="lyric-line" data-time="51.5">So don't tell them what you told me...</div>
-                <div class="lyric-line" data-time="55.5">Don't hold me like you know me...</div>
-                <div class="lyric-line" data-time="59">I would rather burn forever...</div>
-                <div class="lyric-line" data-time="66">Oh, you should know...</div>
-                <div class="lyric-line" data-time="70">That I die slow...</div>
-                <div class="lyric-line" data-time="73.5">Running through the halls of your haunted home...</div>
-                <div class="lyric-line" data-time="81">And the toughest part...</div>
-                <div class="lyric-line" data-time="84">Is that we both know...</div>
-                <div class="lyric-line" data-time="88">What happened to you...</div>
-                <div class="lyric-line" data-time="91.5">Why you're out on your own...</div>
-                <div class="lyric-line" data-time="95.5">Merry Christmas...</div>
-                <div class="lyric-line" data-time="99.5">Please don't call...</div>
-                <div class="lyric-line" data-time="104">🎵 (Musical Interlude) 🎵</div>
-                <div class="lyric-line" data-time="125">You really left me on the line, kid...</div>
-                <div class="lyric-line" data-time="129">Holding all your baggage...</div>
-                <div class="lyric-line" data-time="132.5">You know no one touch your father...</div>
-                <div class="lyric-line" data-time="136">He said, "Welcome to your up time"...</div>
-                <div class="lyric-line" data-time="140">On the flickers like a streetlight...</div>
-                <div class="lyric-line" data-time="143.5">And flickers through the independent...</div>
-                <div class="lyric-line" data-time="147.5">Oh, Golden Boy...</div>
-                <div class="lyric-line" data-time="151">Shine the light on your own...</div>
-                <div class="lyric-line" data-time="155">And at your best, you were magic...</div>
-                <div class="lyric-line" data-time="162">So don't tell them what you told me...</div>
-                <div class="lyric-line" data-time="166">Don't even tell them that you knew me...</div>
-                <div class="lyric-line" data-time="169.5">I would rather burn forever...</div>
-                <div class="lyric-line" data-time="176.5">Oh, you should know...</div>
-                <div class="lyric-line" data-time="180.5">That I die slow...</div>
-                <div class="lyric-line" data-time="184">Running through the halls of your haunted home...</div>
-                <div class="lyric-line" data-time="191.5">And the toughest part...</div>
-                <div class="lyric-line" data-time="195">Is that we both know...</div>
-                <div class="lyric-line" data-time="199">What happened to you...</div>
-                <div class="lyric-line" data-time="202.5">Why you're out on your own...</div>
-                <div class="lyric-line" data-time="206.5">Merry Christmas...</div>
-                <div class="lyric-line" data-time="210">Please don't call...</div>
-                <div class="lyric-line" data-time="214">Merry Christmas, I'm not yours at all...</div>
-                <div class="lyric-line" data-time="221.5">Merry Christmas...</div>
-                <div class="lyric-line" data-time="225.5">Please don't call...</div>
-                <div class="lyric-line" data-time="229">Please don't call...</div>
-                <div class="lyric-line" data-time="235">🎵 (Outro Music) 🎵</div>
+            <div class="lyrics-wrapper">
+                <div class="lyric-line" data-time="0">Baris lirik pertama lagu disini...</div>
+                <div class="lyric-line" data-time="5">Baris lirik kedua mengalir indah...</div>
+                <div class="lyric-line" data-time="10">Menyusuri waktu yang terus berjalan...</div>
+                <div class="lyric-line" data-time="15">Hingga akhir kita dipertemukan...</div>
             </div>
         </div>
 
-        <!-- Tombol Audio On / Off Kustom Presisi Tengah -->
         <div class="audio-control-container">
-            <button id="audioToggleBtn" class="audio-toggle-btn" onclick="toggleAudio()">Play ▶</button>
+            <button class="audio-toggle-btn" id="audioToggleBtn" onclick="toggleAudio()">Play ▶</button>
         </div>
-
-        <!-- File Lagu Mp3 -->
-        <audio id="myAudio">
-            <source src="audio.mp3" type="audio/mpeg">
-        </audio>
     </div>
 
-    <!-- Elemen Pop-Up Modal Teks Berparagraf -->
-    <div class="modal-overlay" id="philosophyModal">
-        <div class="modal-content">
-            <img src="sticker6370840673681852846.png" alt="Misteri Eksistensi" class="modal-img">
-            <h2 class="modal-title">Misteri Dunia</h2>
-            
-            <div class="modal-scroll-area">
-                <p class="modal-paragraph">
-                    Dunia ini bergerak dalam rangkaian misteri besar yang tidak selalu menyediakan jawaban instan. Sering kali, ruang bawah sadar kita dipaksa melompat terlalu tinggi—mencoba bersaing dan menyejajarkan diri dengan spektrum pemikiran para filsuf, ilmuwan, hingga para jenius yang pernah mengubah arah peradaban manusia.
-                </p>
-                <p class="modal-paragraph">
-                    Namun, benturan pemikiran itu kerap kali meninggalkan satu teka-teki tak terpecahkan mengenai batasan waktu kita sendiri. Masa lalu adalah bagian misteri yang jalurnya telah mengeras; labirin kejadian yang tidak bisa dibongkar ulang namun membentuk fondasi dari siapa kita hari ini.
-                </p>
-                <p class="modal-paragraph">
-                    Sementara itu, masa depan berdiri sebagai misteri berikutnya—sebuah kabut tebal tanpa kepastian yang memaksa kita untuk tetap melangkah maju. Menatap masa depan bukanlah tentang memenangkan kompetisi besar melawan dunia, melainkan cara kita berdamai dengan ketidaktahuan dan berani menjadi arsitek atas waktu kita sendiri.
-                </p>
+    <!-- ================= SUB-SYSTEM MISTERI KADO ================= -->
+    
+    <!-- Lapis 1: Input Nama -->
+    <div class="mystery-overlay" id="nameOverlay">
+        <div class="mystery-card">
+            <h3>Sebelum memulai misteri...</h3>
+            <p>Masukkan panggilan atau nickname kamu:</p>
+            <input type="text" id="userNickname" placeholder="Nama / Nickname..." autocomplete="off">
+            <button class="mystery-btn-main" onclick="submitName()">Masuk</button>
+        </div>
+    </div>
+
+    <!-- Lapis 2: 9 Kotak Kado -->
+    <div class="mystery-overlay" id="giftOverlay">
+        <div class="mystery-card wide-card">
+            <h3>Pilih Salah Satu Kado Misteri</h3>
+            <p>Pilihanmu akan menentukan pertanyaan hidup/cinta yang kamu dapatkan.</p>
+            <div class="gift-grid">
+                <div class="gift-box" onclick="selectGift(1)">🎁<span>1</span></div>
+                <div class="gift-box" onclick="selectGift(2)">🎁<span>2</span></div>
+                <div class="gift-box" onclick="selectGift(3)">🎁<span>3</span></div>
+                <div class="gift-box" onclick="selectGift(4)">🎁<span>4</span></div>
+                <div class="gift-box" onclick="selectGift(5)">🎁<span>5</span></div>
+                <div class="gift-box" onclick="selectGift(6)">🎁<span>6</span></div>
+                <div class="gift-box" onclick="selectGift(7)">🎁<span>7</span></div>
+                <div class="gift-box" onclick="selectGift(8)">🎁<span>8</span></div>
+                <div class="gift-box" onclick="selectGift(9)">🎁<span>9</span></div>
             </div>
-            
-            <button class="close-modal-btn" onclick="toggleModal(false)">Kembali Melangkah</button>
         </div>
     </div>
 
-    <!-- Pastikan file script.js berada di folder yang sama -->
+    <!-- Lapis 3: Tampilan Pertanyaan & Thank You -->
+    <div class="mystery-overlay" id="questionOverlay">
+        <div class="mystery-card" id="dynamicMysteryCard">
+            <div class="gift-opening-animation" id="giftAnimate">🎁</div>
+            <div class="question-container" id="questionContainer">
+                <!-- Pertanyaan dimasukkan via JS -->
+            </div>
+        </div>
+    </div>
+
+    <audio id="myAudio" src="lagu.mp3"></audio>
+
     <script src="script.js"></script>
 </body>
 </html>
