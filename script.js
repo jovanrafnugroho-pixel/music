@@ -44,21 +44,27 @@ let selectedOptionIndex = null;
 
 // --- AUDIO CONTROLLER ENGINE ---
 // --- AUDIO CONTROLLER ENGINE & SPOTIFY STYLE FREE SCROLL ---
+// --- AUDIO CONTROLLER ENGINE & SMART AUTO-LOCK SCROLL ---
 let isUserScrolling = false;
-let userScrollTimeout = null;
+let lastScrollTop = 0;
 
 if (lyricsBox) {
-    // Mendeteksi interaksi scroll manual dari pengguna
+    // Mendeteksi arah scroll pengguna dan mekanisme auto-lock kembali
     lyricsBox.addEventListener('scroll', () => {
-        if (!lyricsBox.classList.contains('system-scrolling')) {
+        // Jika scroll dipicu oleh sistem, abaikan logika manual user
+        if (lyricsBox.classList.contains('system-scrolling')) return;
+
+        const currentScrollTop = lyricsBox.scrollTop;
+
+        if (currentScrollTop > lastScrollTop) {
+            // User menggeser lirik KE BAWAH -> Lepas Kunci (Unlock)
             isUserScrolling = true;
-            
-            // Reset timeout agar waktu tunggu diulang selama user masih menggeser lirik
-            clearTimeout(userScrollTimeout);
-            userScrollTimeout = setTimeout(() => {
-                isUserScrolling = false;
-            }, 4000); // Memberikan jeda 4 detik sebelum otomatis kembali mengikuti lagu
+        } else if (currentScrollTop === 0) {
+            // User menggeser lirik KEMBALI KE ATAS MENTOK (0) -> Kunci Kembali (Lock)
+            isUserScrolling = false;
         }
+        
+        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
     });
 }
 
@@ -98,9 +104,8 @@ if (audio) {
             const activeLine = lyricLines[activeIndex];
             activeLine.classList.add('active');
             
-            // Logika Scroll Otomatis Gaya Spotify (Tepat di tengah-tengah box lirik)
+            // Logika Scroll Otomatis (Hanya berjalan jika status lirik ter-LOCK)
             if (!isUserScrolling) {
-                // Menghitung titik tengah box lirik agar transisi terasa mengalir pas
                 const boxHeight = lyricsBox.clientHeight;
                 const lineTop = activeLine.offsetTop;
                 const lineHeight = activeLine.clientHeight;
@@ -109,13 +114,15 @@ if (audio) {
                 lyricsBox.classList.add('system-scrolling');
                 lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
                 
+                // Berikan jeda waktu animasi scroll halus selesai sebelum menghapus kelas penanda sistem
                 setTimeout(() => {
                     lyricsBox.classList.remove('system-scrolling');
-                }, 400); 
+                }, 350); 
             }
         }
     });
 }
+
 
 // --- SUB-SISTEM ALUR MODAL KUESIONER (FIXED NO REFRESH) ---
 function startMysteryFlow() {
