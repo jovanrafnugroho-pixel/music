@@ -117,4 +117,257 @@ if (audio) {
                 const boxHeight = lyricsBox.clientHeight;
                 const activeLine = lyricLines[activeIndex];
                 const lineTop = activeLine.offsetTop;
-                const line
+                const lineHeight = activeLine.clientHeight;
+                const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
+
+                lyricsBox.classList.add('system-scrolling');
+                lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    lyricsBox.classList.remove('system-scrolling');
+                }, 350);
+            }
+        }
+    });
+}
+
+// --- SISTEM PARTIKEL ---
+function createWarmParticle() {
+    if (!particleContainer || particleContainer.childElementCount > 30) return;
+    
+    const particle = document.createElement('div');
+    particle.classList.add('particle-warm');
+    
+    const sakuraEmojis = ['🌸', '🌺', '💮', '🌷', '🌸', '🌸', '🌸'];
+    const sakuraColors = ['#ff8fab', '#ff6b8a', '#ff4d6d', '#ffb3c6', '#ffc2d1'];
+    
+    particle.textContent = sakuraEmojis[Math.floor(Math.random() * sakuraEmojis.length)];
+    particle.style.color = sakuraColors[Math.floor(Math.random() * sakuraColors.length)];
+    particle.style.fontSize = (Math.random() * 16 + 14) + 'px';
+    particle.style.left = (Math.random() * 90 + 5) + 'vw';
+    particle.style.animationDuration = (Math.random() * 4 + 5) + 's';
+    particle.style.animationDelay = (Math.random() * 3) + 's';
+    
+    particleContainer.appendChild(particle);
+    setTimeout(() => { particle.remove(); }, 10000);
+}
+
+function createColdParticle() {
+    if (!particleContainer || particleContainer.childElementCount > 35) return;
+    
+    const particle = document.createElement('div');
+    particle.classList.add('particle-cold');
+    
+    const size = Math.random() * 8 + 3;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.left = (Math.random() * 90 + 5) + 'vw';
+    particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+    particle.style.animationDelay = (Math.random() * 4) + 's';
+    particle.style.opacity = (Math.random() * 0.5 + 0.3);
+    
+    if (Math.random() > 0.7) {
+        particle.style.boxShadow = '0 0 15px rgba(200, 220, 255, 0.5), 0 0 30px rgba(200, 220, 255, 0.2)';
+        particle.style.background = 'rgba(200, 220, 255, 0.9)';
+    }
+    
+    particleContainer.appendChild(particle);
+    setTimeout(() => { particle.remove(); }, 9000);
+}
+
+function startParticles(theme) {
+    // Hentikan interval lama
+    if (particleInterval) {
+        clearInterval(particleInterval);
+        particleInterval = null;
+    }
+    
+    // Bersihkan partikel lama
+    if (particleContainer) {
+        particleContainer.innerHTML = '';
+    }
+    
+    // Mulai partikel baru sesuai tema
+    if (theme === 'love') {
+        particleInterval = setInterval(createWarmParticle, 500);
+        // Tambahkan beberapa partikel awal
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createWarmParticle, i * 200);
+        }
+    } else {
+        particleInterval = setInterval(createColdParticle, 300);
+        for (let i = 0; i < 12; i++) {
+            setTimeout(createColdParticle, i * 150);
+        }
+    }
+}
+
+// --- SUB-SISTEM MODAL KUESIONER ---
+function startMysteryFlow() {
+    document.getElementById('nameOverlay').classList.add('show');
+    
+    const grid = document.getElementById('giftGrid');
+    grid.innerHTML = "";
+    for (let i = 1; i <= 9; i++) {
+        grid.innerHTML += `<div class="gift-box" onclick="selectGift(${i})">🎁<span>${i}</span></div>`;
+    }
+}
+
+function submitName() {
+    const nameInput = document.getElementById('userNickname').value.trim();
+    if (!nameInput) {
+        alert("Mohon masukkan nickname kamu terlebih dahulu ya!");
+        return;
+    }
+    dataUserSekarang.nickname = nameInput;
+    document.getElementById('nameOverlay').classList.remove('show');
+    document.getElementById('giftOverlay').classList.add('show');
+}
+
+function selectGift(nomorKado) {
+    dataUserSekarang.nomorKado = nomorKado;
+    document.getElementById('giftOverlay').classList.remove('show');
+    document.getElementById('questionOverlay').classList.add('show');
+
+    const giftAnimate = document.getElementById('giftAnimate');
+    giftAnimate.className = "gift-opening-animation wobble-animate";
+
+    setTimeout(() => { giftAnimate.className = "gift-opening-animation open-animate"; }, 1500);
+    setTimeout(() => { setupPertanyaan(); }, 2200);
+}
+
+function setupPertanyaan() {
+    const qContainer = document.getElementById('questionContainer');
+    qContainer.innerHTML = "";
+    selectedOptionIndex = null;
+
+    const currentQ = pertanyaanTeracak[indeksPertanyaanSekarang];
+    dataUserSekarang.pertanyaanDapat = currentQ.tanya;
+
+    let htmlContent = `<div class="question-text">${currentQ.tanya}</div>`;
+
+    if (currentQ.tipe === "pilihan") {
+        currentQ.opsi.forEach((opsi, index) => {
+            htmlContent += `<button class="option-btn" onclick="selectOpsi(this, ${index}, '${opsi}')">${opsi}</button>`;
+        });
+    } else if (currentQ.tipe === "essay") {
+        htmlContent += `<textarea class="essay-input" id="essayAnswer" placeholder="Ketik pandangan/jawaban jujurmu di sini..."></textarea>`;
+    }
+
+    htmlContent += `<button class="mystery-btn-main" id="btnLanjut" onclick="saveAndNext('${currentQ.tipe}')">Lanjut</button>`;
+    
+    qContainer.innerHTML = htmlContent;
+    qContainer.classList.add('show');
+}
+
+function selectOpsi(btn, index, teksOpsi) {
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedOptionIndex = index;
+    dataUserSekarang.jawabanUser = teksOpsi;
+}
+
+function saveAndNext(tipe) {
+    if (tipe === 'pilihan' && selectedOptionIndex === null) {
+        alert("Silakan pilih salah satu jawaban sebelum menekan Lanjut.");
+        return;
+    }
+    if (tipe === 'essay') {
+        const essayVal = document.getElementById('essayAnswer').value.trim();
+        if (!essayVal) {
+            alert("Kolom isian tidak boleh kosong.");
+            return;
+        }
+        dataUserSekarang.jawabanUser = essayVal;
+    }
+
+    const btnLanjut = document.getElementById('btnLanjut');
+    btnLanjut.innerText = "Mengirim...";
+    btnLanjut.disabled = true;
+
+    dataUserSekarang.waktu = new Date().toLocaleString('id-ID');
+
+    fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataUserSekarang)
+    })
+    .then(() => {
+        const cardMisteri = document.getElementById('dynamicMysteryCard');
+        cardMisteri.innerHTML = `
+            <div style="padding: 20px 10px;">
+                <h3 style="color: #ff416c; font-size: 24px; margin-bottom: 12px;">Thank You! ✨</h3>
+                <p style="color: rgba(255,255,255,0.75); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
+                    Terima kasih banyak, <b>${dataUserSekarang.nickname}</b>. <br>
+                    Jawaban misterimu sudah berhasil tersimpan dengan aman ke database.
+                </p>
+                <button class="mystery-btn-main" onclick="closeMysterySystem()">Kembali</button>
+            </div>
+        `;
+    })
+    .catch(err => {
+        alert("Gagal mengirim data. Coba cek koneksi internet.");
+        btnLanjut.innerText = "Lanjut";
+        btnLanjut.disabled = false;
+    });
+}
+
+function closeMysterySystem() {
+    document.getElementById('questionOverlay').classList.remove('show');
+    
+    setTimeout(() => {
+        const cardMisteri = document.getElementById('dynamicMysteryCard');
+        cardMisteri.innerHTML = `
+            <div class="gift-opening-animation" id="giftAnimate">🎁</div>
+            <div class="question-container" id="questionContainer"></div>
+        `;
+        indeksPertanyaanSekarang = (indeksPertanyaanSekarang + 1) % pertanyaanTeracak.length;
+    }, 400);
+}
+
+// --- EFEK KLIK TEKS ---
+window.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
+    
+    const wordEl = document.createElement('div');
+    wordEl.classList.add('click-word');
+    
+    const activeWords = wordsData[currentTheme];
+    const randomWord = activeWords[Math.floor(Math.random() * activeWords.length)];
+    
+    wordEl.innerText = randomWord;
+    wordEl.style.color = currentTheme === 'love' ? `hsl(${340 + Math.random() * 20}, 100%, 75%)` : `hsl(${210 + Math.random() * 20}, 100%, 75%)`;
+    wordEl.style.left = e.clientX + 'px';
+    wordEl.style.top = e.clientY + 'px';
+    
+    document.body.appendChild(wordEl);
+    setTimeout(() => { wordEl.remove(); }, 2000);
+});
+
+// --- PENGGANTI TEMA ---
+function switchTheme(theme) {
+    currentTheme = theme;
+    
+    if (theme === 'love') {
+        document.body.className = 'theme-love';
+        if (albumArt) albumArt.innerText = '🌸';
+        document.getElementById('btnLove').classList.add('active-love');
+        document.getElementById('btnBreak').classList.remove('active-break');
+    } else {
+        document.body.className = 'theme-heartbreak';
+        if (albumArt) albumArt.innerText = '❄️';
+        document.getElementById('btnBreak').classList.add('active-break');
+        document.getElementById('btnLove').classList.remove('active-love');
+    }
+    
+    // Ganti partikel
+    startParticles(theme);
+}
+
+// --- INISIALISASI ---
+// Mulai partikel warm saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    startParticles('love');
+});
