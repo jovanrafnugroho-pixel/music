@@ -8,11 +8,12 @@ const albumArt = document.getElementById('albumArt');
 
 let currentTheme = 'love';
 let particleInterval = null;
+let lyricLines = [];
 
 // Database Kata Klik
 const wordsData = {
-    love: ["misteri", "waktu", "rasa", "merah", "melodi", "flicker", "hati", "tenang", "berlari", "sakura", "cinta", "hangat"],
-    heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing", "salju", "sepi", "hampa"]
+    love: ["misteri", "waktu", "rasa", "merah", "melodi", "hati", "tenang", "berlari", "sakura", "cinta", "hangat", "bunga", "indah", "mimpi"],
+    heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing", "salju", "sepi", "hampa", "sunyi", "luka"]
 };
 
 // 9 Daftar Pertanyaan
@@ -39,14 +40,12 @@ function acakPertanyaan(array) {
 
 const pertanyaanTeracak = acakPertanyaan([...listPertanyaan]);
 let indeksPertanyaanSekarang = 0;
-
 let dataUserSekarang = { nickname: "", nomorKado: null, pertanyaanDapat: "", jawabanUser: "" };
 let selectedOptionIndex = null;
 
 // --- AUDIO CONTROLLER ENGINE ---
 let isUserScrolling = false;
 let lastScrollTop = 0;
-let lyricLines = [];
 
 if (lyricsBox) {
     lyricLines = document.querySelectorAll('.lyric-line');
@@ -67,14 +66,14 @@ function toggleAudio() {
     if (!audio) return;
     if (audio.paused) {
         audio.play().then(() => {
-            audioToggleBtn.innerText = "Pause ⏸";
+            audioToggleBtn.innerText = "⏸ Pause";
             audioToggleBtn.classList.add('playing');
         }).catch(err => {
             alert("Error: Gagal memutar berkas audio. Pastikan berkas bernama audio.mp3 sudah berada di root repositori GitHub kamu.");
         });
     } else {
         audio.pause();
-        audioToggleBtn.innerText = "Play ▶";
+        audioToggleBtn.innerText = "▶ Play";
         audioToggleBtn.classList.remove('playing');
     }
 }
@@ -84,9 +83,10 @@ if (audio) {
         const currentTime = audio.currentTime;
         let activeIndex = -1;
 
-        // Cari lirik aktif
+        // Cari lirik aktif berdasarkan waktu
         for (let i = 0; i < lyricLines.length; i++) {
-            if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) {
+            const time = parseFloat(lyricLines[i].getAttribute('data-time'));
+            if (currentTime >= time) {
                 activeIndex = i;
             } else {
                 break;
@@ -112,7 +112,7 @@ if (audio) {
                 lyricLines[activeIndex + 1].classList.add('next-active');
             }
 
-            // Scroll otomatis
+            // Scroll otomatis hanya jika user tidak sedang scroll
             if (!isUserScrolling) {
                 const boxHeight = lyricsBox.clientHeight;
                 const activeLine = lyricLines[activeIndex];
@@ -121,11 +121,11 @@ if (audio) {
                 const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
 
                 lyricsBox.classList.add('system-scrolling');
-                lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                lyricsBox.scrollTop = scrollPosition;
 
                 setTimeout(() => {
                     lyricsBox.classList.remove('system-scrolling');
-                }, 350);
+                }, 100);
             }
         }
     });
@@ -133,71 +133,81 @@ if (audio) {
 
 // --- SISTEM PARTIKEL ---
 function createWarmParticle() {
-    if (!particleContainer || particleContainer.childElementCount > 30) return;
+    if (!particleContainer) return;
     
     const particle = document.createElement('div');
     particle.classList.add('particle-warm');
     
-    const sakuraEmojis = ['🌸', '🌺', '💮', '🌷', '🌸', '🌸', '🌸'];
-    const sakuraColors = ['#ff8fab', '#ff6b8a', '#ff4d6d', '#ffb3c6', '#ffc2d1'];
+    const sakuraEmojis = ['🌸', '🌸', '🌸', '🌸', '🌺', '💮', '🌷', '🌸', '🌸', '🌸'];
+    const sakuraColors = ['#ff8fab', '#ff6b8a', '#ff4d6d', '#ffb3c6', '#ffc2d1', '#ff9eb5'];
     
     particle.textContent = sakuraEmojis[Math.floor(Math.random() * sakuraEmojis.length)];
     particle.style.color = sakuraColors[Math.floor(Math.random() * sakuraColors.length)];
-    particle.style.fontSize = (Math.random() * 16 + 14) + 'px';
-    particle.style.left = (Math.random() * 90 + 5) + 'vw';
-    particle.style.animationDuration = (Math.random() * 4 + 5) + 's';
-    particle.style.animationDelay = (Math.random() * 3) + 's';
+    particle.style.fontSize = (Math.random() * 20 + 16) + 'px';
+    particle.style.left = (Math.random() * 95 + 2) + 'vw';
+    particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+    particle.style.animationDelay = (Math.random() * 5) + 's';
+    particle.style.transform = `scale(${0.5 + Math.random() * 0.5})`;
     
     particleContainer.appendChild(particle);
-    setTimeout(() => { particle.remove(); }, 10000);
+    setTimeout(() => { 
+        if (particle.parentNode) particle.remove(); 
+    }, 12000);
 }
 
 function createColdParticle() {
-    if (!particleContainer || particleContainer.childElementCount > 35) return;
+    if (!particleContainer) return;
     
     const particle = document.createElement('div');
     particle.classList.add('particle-cold');
     
-    const size = Math.random() * 8 + 3;
+    const size = Math.random() * 10 + 3;
     particle.style.width = size + 'px';
     particle.style.height = size + 'px';
-    particle.style.left = (Math.random() * 90 + 5) + 'vw';
-    particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
-    particle.style.animationDelay = (Math.random() * 4) + 's';
-    particle.style.opacity = (Math.random() * 0.5 + 0.3);
+    particle.style.left = (Math.random() * 95 + 2) + 'vw';
+    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+    particle.style.animationDelay = (Math.random() * 6) + 's';
+    particle.style.opacity = (Math.random() * 0.6 + 0.2);
     
-    if (Math.random() > 0.7) {
-        particle.style.boxShadow = '0 0 15px rgba(200, 220, 255, 0.5), 0 0 30px rgba(200, 220, 255, 0.2)';
+    // Beberapa partikel lebih terang dan berkilau
+    if (Math.random() > 0.6) {
+        particle.style.boxShadow = '0 0 20px rgba(200, 220, 255, 0.6), 0 0 40px rgba(200, 220, 255, 0.2)';
         particle.style.background = 'rgba(200, 220, 255, 0.9)';
     }
     
+    // Partikel kecil lebih banyak
+    if (size < 5) {
+        particle.style.background = 'rgba(255, 255, 255, 0.9)';
+    }
+    
     particleContainer.appendChild(particle);
-    setTimeout(() => { particle.remove(); }, 9000);
+    setTimeout(() => { 
+        if (particle.parentNode) particle.remove(); 
+    }, 12000);
 }
 
 function startParticles(theme) {
-    // Hentikan interval lama
     if (particleInterval) {
         clearInterval(particleInterval);
         particleInterval = null;
     }
     
-    // Bersihkan partikel lama
     if (particleContainer) {
         particleContainer.innerHTML = '';
     }
     
-    // Mulai partikel baru sesuai tema
     if (theme === 'love') {
-        particleInterval = setInterval(createWarmParticle, 500);
-        // Tambahkan beberapa partikel awal
-        for (let i = 0; i < 8; i++) {
-            setTimeout(createWarmParticle, i * 200);
+        // Warm particles - lebih banyak
+        particleInterval = setInterval(createWarmParticle, 200);
+        // Tambahkan banyak partikel awal
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createWarmParticle, i * 150);
         }
     } else {
-        particleInterval = setInterval(createColdParticle, 300);
-        for (let i = 0; i < 12; i++) {
-            setTimeout(createColdParticle, i * 150);
+        // Cold particles - lebih banyak
+        particleInterval = setInterval(createColdParticle, 150);
+        for (let i = 0; i < 30; i++) {
+            setTimeout(createColdParticle, i * 100);
         }
     }
 }
@@ -362,12 +372,12 @@ function switchTheme(theme) {
         document.getElementById('btnLove').classList.remove('active-love');
     }
     
-    // Ganti partikel
     startParticles(theme);
 }
 
 // --- INISIALISASI ---
-// Mulai partikel warm saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
+    // Kumpulkan lyric lines
+    lyricLines = document.querySelectorAll('.lyric-line');
     startParticles('love');
 });
