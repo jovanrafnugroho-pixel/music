@@ -46,18 +46,19 @@ body.theme-heartbreak {
     overflow: hidden;
 }
 
-/* PARTIKEL WARM - BUNGA SAKURA */
+/* PARTIKEL WARM - MERAH */
 .particle-warm {
     position: absolute;
     bottom: -30px;
     opacity: 0;
-    animation: floatUpWarm 8s linear infinite;
+    animation: floatUpWarm 7s linear infinite;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
     user-select: none;
     pointer-events: none;
+    font-weight: bold;
 }
 @keyframes floatUpWarm {
     0% { 
@@ -70,14 +71,14 @@ body.theme-heartbreak {
     }
     50% {
         opacity: 0.8;
-        transform: translateY(-50vh) rotate(30deg) scale(1);
+        transform: translateY(-50vh) rotate(20deg) scale(1);
     }
     90% { 
-        opacity: 0.6; 
-        transform: translateY(-90vh) rotate(50deg) scale(0.8);
+        opacity: 0.5; 
+        transform: translateY(-90vh) rotate(35deg) scale(0.8);
     }
     100% { 
-        transform: translateY(-110vh) translateX(80px) rotate(70deg) scale(0.3); 
+        transform: translateY(-110vh) translateX(60px) rotate(45deg) scale(0.3); 
         opacity: 0; 
     }
 }
@@ -122,11 +123,11 @@ body.theme-heartbreak {
 }
 .album-art { 
     width: 100px; height: 100px; 
-    background: linear-gradient(45deg, #ff416c, #ff6b8a); 
+    background: linear-gradient(45deg, #ff1744, #d50000); 
     border-radius: 50%; margin: 0 auto 15px; 
     display: flex; align-items: center; justify-content: center; 
     font-size: 40px; 
-    box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3); 
+    box-shadow: 0 10px 20px rgba(255, 23, 68, 0.3); 
     animation: pulse 4s infinite ease-in-out; 
     transition: all 0.5s ease;
 }
@@ -149,8 +150,8 @@ body.theme-heartbreak {
 }
 .theme-btn:hover { background: rgba(255,255,255,0.12); }
 .theme-btn.active-love { 
-    background: #ff416c; color: #fff; border-color: transparent; 
-    box-shadow: 0 0 20px rgba(255, 65, 108, 0.3);
+    background: #ff1744; color: #fff; border-color: transparent; 
+    box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
 }
 .theme-btn.active-break { 
     background: #3a7bd5; color: #fff; border-color: transparent;
@@ -177,7 +178,6 @@ body.theme-heartbreak {
 .lyrics-box::-webkit-scrollbar { display: none; }
 .lyrics-wrapper { 
     padding: 80px 0 80px 0;
-    transition: none;
 }
 .lyric-line { 
     font-size: 14px; 
@@ -196,8 +196,8 @@ body.theme-heartbreak {
     transform: scale(1.05);
 }
 .theme-love .lyric-line.active { 
-    color: #ff8fab; 
-    text-shadow: 0 0 30px rgba(255, 65, 108, 0.5);
+    color: #ff1744; 
+    text-shadow: 0 0 30px rgba(255, 23, 68, 0.5);
 }
 .theme-heartbreak .lyric-line.active { 
     color: #8ab4f8; 
@@ -214,8 +214,8 @@ body.theme-heartbreak {
     font-size: 15px;
     font-weight: 400;
 }
-.theme-love .lyric-line.prev-active { color: rgba(255, 143, 171, 0.5); }
-.theme-love .lyric-line.next-active { color: rgba(255, 143, 171, 0.4); }
+.theme-love .lyric-line.prev-active { color: rgba(255, 23, 68, 0.5); }
+.theme-love .lyric-line.next-active { color: rgba(255, 23, 68, 0.4); }
 .theme-heartbreak .lyric-line.prev-active { color: rgba(138, 180, 248, 0.5); }
 .theme-heartbreak .lyric-line.next-active { color: rgba(138, 180, 248, 0.4); }
 
@@ -225,7 +225,7 @@ body.theme-heartbreak {
     color: white; padding: 8px 28px; border-radius: 25px; 
     font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; 
 }
-.audio-toggle-btn.playing { background: #ff416c; border-color: transparent; }
+.audio-toggle-btn.playing { background: #ff1744; border-color: transparent; }
 .theme-heartbreak .audio-toggle-btn.playing { background: #3a7bd5; border-color: transparent; }
 
 .mystery-overlay {
@@ -249,7 +249,7 @@ body.theme-heartbreak {
     border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
     color: white; font-size: 15px; outline: none; text-align: center; margin-bottom: 20px;
 }
-.mystery-card input[type="text"]:focus { border-color: #ff416c; background: rgba(255,255,255,0.1); }
+.mystery-card input[type="text"]:focus { border-color: #ff1744; background: rgba(255,255,255,0.1); }
 
 .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px; }
 .gift-box {
@@ -266,36 +266,4 @@ body.theme-heartbreak {
 
 @keyframes wobble {
     0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-15deg); }
-    75% { transform: rotate(15deg); }
-}
-@keyframes openGift {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); font-size: 85px; }
-    100% { transform: scale(1); opacity: 0; height: 0; margin: 0; overflow: hidden; }
-}
-
-.question-container { opacity: 0; transition: opacity 0.5s ease; text-align: left; }
-.question-container.show { opacity: 1; }
-.question-text { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; text-align: center; color: #fff; }
-
-.option-btn {
-    width: 100%; padding: 12px 15px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-    color: rgba(255,255,255,0.85); text-align: left; font-size: 13px; cursor: pointer; margin-bottom: 10px; transition: 0.2s;
-}
-.option-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.3); }
-.option-btn.selected { background: #ff416c; color: white; border-color: transparent; font-weight: 600; }
-
-.essay-input {
-    width: 100%; height: 80px; padding: 12px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-    color: white; font-size: 13px; outline: none; resize: none; margin-bottom: 15px; font-family: inherit;
-}
-.mystery-btn-main {
-    background: #ff416c; color: white; border: none; padding: 12px 35px;
-    border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;
-    transition: 0.3s; display: block; margin: 15px auto 0;
-}
-.mystery-btn-main:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); }
-.mystery-btn-main:disabled { background: #555; cursor: not-allowed; }
+    25% {
