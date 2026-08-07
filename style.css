@@ -9,11 +9,11 @@ body {
 }
 
 body.theme-love {
-    background: linear-gradient(45deg, #180511, #3d101e, #1c0512, #4a1225);
+    background: linear-gradient(45deg, #1a0510, #3d1020, #2a0818, #4a1225);
     background-size: 400% 400%; animation: gradientMove 15s ease infinite;
 }
 body.theme-heartbreak {
-    background: linear-gradient(45deg, #040814, #10182e, #080d1a, #1a2647);
+    background: linear-gradient(45deg, #040814, #0a1530, #080d1a, #14204a);
     background-size: 400% 400%; animation: gradientMove 15s ease infinite;
 }
 @keyframes gradientMove {
@@ -40,39 +40,176 @@ body.theme-heartbreak {
     background-size: 100% 100%; background-repeat: no-repeat;
 }
 
-.ambient-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 90; }
-.particle-love { position: absolute; bottom: -30px; background: radial-gradient(circle, rgba(255,117,151,0.5) 0%, rgba(255,65,108,0) 70%); border-radius: 50%; animation: floatUp 6s linear infinite; display: flex; align-items: center; justify-content: center; }
-@keyframes floatUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-110vh) translateX(40px) scale(1.1); opacity: 0; } }
-.particle-snow { position: absolute; top: -20px; background: rgba(255, 255, 255, 0.8); border-radius: 50%; box-shadow: 0 0 6px #ffffff; animation: fallDown 5s linear infinite; }
-@keyframes fallDown { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 0.7; } 85% { opacity: 0.7; } 100% { transform: translateY(110vh) translateX(-30px); opacity: 0; } }
+.ambient-particles { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    pointer-events: none; z-index: 90; 
+    overflow: hidden;
+}
+
+/* PARTIKEL WARM - BUNGA SAKURA */
+.particle-warm {
+    position: absolute;
+    bottom: -30px;
+    opacity: 0;
+    animation: floatUpWarm 6s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+@keyframes floatUpWarm {
+    0% { 
+        transform: translateY(0) rotate(0deg) scale(0.3); 
+        opacity: 0; 
+    }
+    15% { 
+        opacity: 0.8; 
+        transform: translateY(-20px) rotate(15deg) scale(0.8);
+    }
+    80% { 
+        opacity: 0.7; 
+        transform: translateY(-80vh) rotate(45deg) scale(1);
+    }
+    100% { 
+        transform: translateY(-110vh) translateX(60px) rotate(60deg) scale(0.5); 
+        opacity: 0; 
+    }
+}
+
+/* PARTIKEL COLD - SALJU BERBEDA UKURAN */
+.particle-cold {
+    position: absolute;
+    top: -10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 255, 255, 0.1);
+    animation: fallDownCold 5s linear infinite;
+    opacity: 0;
+}
+@keyframes fallDownCold {
+    0% { 
+        transform: translateY(0) translateX(0) rotate(0deg); 
+        opacity: 0;
+    }
+    15% { 
+        opacity: 0.8; 
+    }
+    85% { 
+        opacity: 0.7; 
+    }
+    100% { 
+        transform: translateY(110vh) translateX(-40px) rotate(180deg); 
+        opacity: 0; 
+    }
+}
+
+.particle-cold:nth-child(odd) {
+    animation-duration: 6s;
+}
+.particle-cold:nth-child(3n) {
+    animation-duration: 4.5s;
+    background: rgba(200, 220, 255, 0.8);
+}
+.particle-cold:nth-child(5n) {
+    animation-duration: 7s;
+    background: rgba(255, 255, 255, 0.5);
+}
 
 .container {
     width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px rgba(255, 255, 255, 0.1) solid; border-radius: 24px; padding: 25px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); z-index: 10; text-align: center;
 }
-.album-art { width: 100px; height: 100px; background: linear-gradient(45deg, #ff416c, #ff4b2b); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 10px 20px rgba(255, 65, 108, 0.2); animation: pulse 4s infinite ease-in-out; }
-.theme-heartbreak .album-art { background: linear-gradient(45deg, #3a6073, #3a7bd5); box-shadow: 0 10px 20px rgba(58, 123, 213, 0.2); }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+.album-art { 
+    width: 100px; height: 100px; 
+    background: linear-gradient(45deg, #ff416c, #ff6b8a); 
+    border-radius: 50%; margin: 0 auto 15px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 40px; 
+    box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3); 
+    animation: pulse 4s infinite ease-in-out; 
+    transition: all 0.5s ease;
+}
+.theme-heartbreak .album-art { 
+    background: linear-gradient(45deg, #2c4a7c, #4a7fc7); 
+    box-shadow: 0 10px 20px rgba(58, 123, 213, 0.3); 
+}
+@keyframes pulse { 
+    0%, 100% { transform: scale(1); } 
+    50% { transform: scale(1.05); } 
+}
 .song-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
 .artist-name { font-size: 13px; color: rgba(255, 255, 255, 0.5); margin-bottom: 15px; }
 
 .theme-switcher { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-.theme-btn { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.6); padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s; }
-.theme-btn.active-love { background: #ff416c; color: #fff; border-color: transparent; }
-.theme-btn.active-break { background: #3a7bd5; color: #fff; border-color: transparent; }
-.popup-trigger-btn { background: rgba(255, 255, 255, 0.12); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 24px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: 0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
+.theme-btn { 
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: rgba(255, 255, 255, 0.6); padding: 6px 16px; border-radius: 20px; 
+    cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s; 
+}
+.theme-btn:hover { background: rgba(255,255,255,0.12); }
+.theme-btn.active-love { 
+    background: #ff416c; color: #fff; border-color: transparent; 
+    box-shadow: 0 0 20px rgba(255, 65, 108, 0.3);
+}
+.theme-btn.active-break { 
+    background: #3a7bd5; color: #fff; border-color: transparent;
+    box-shadow: 0 0 20px rgba(58, 123, 213, 0.3);
+}
+.popup-trigger-btn { 
+    background: rgba(255, 255, 255, 0.12); color: white; 
+    border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 24px; 
+    border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; 
+    margin-bottom: 10px; transition: 0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.1); 
+}
 .popup-trigger-btn:hover { background: white; color: black; }
 
-.lyrics-box { height: 160px; overflow-y: auto; margin: 20px 0; position: relative; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); scrollbar-width: none; }
+.lyrics-box { 
+    height: 160px; overflow-y: auto; margin: 20px 0; 
+    position: relative; border-top: 1px solid rgba(255,255,255,0.1); 
+    border-bottom: 1px solid rgba(255,255,255,0.1); 
+    scrollbar-width: none; 
+}
 .lyrics-box::-webkit-scrollbar { display: none; }
 .lyrics-wrapper { padding: 50px 0; transition: transform 0.4s ease; }
-.lyric-line { font-size: 14px; color: rgba(255, 255, 255, 0.25); padding: 8px 0; transition: all 0.3s; transform: scale(0.95); }
-.lyric-line.active { color: #ffffff; font-weight: 600; font-size: 16px; transform: scale(1.03); text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
-.theme-love .lyric-line.active { color: #ff7597; }
-.theme-heartbreak .lyric-line.active { color: #90b4ec; }
+.lyric-line { 
+    font-size: 14px; color: rgba(255, 255, 255, 0.25); 
+    padding: 6px 0; transition: all 0.3s ease; 
+    transform: scale(0.95); text-align: center;
+    line-height: 1.6;
+}
+.lyric-line.active { 
+    color: #ffffff; font-weight: 600; font-size: 16px; 
+    transform: scale(1.05); text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); 
+}
+.theme-love .lyric-line.active { 
+    color: #ff8fab; 
+    text-shadow: 0 0 20px rgba(255, 65, 108, 0.4);
+}
+.theme-heartbreak .lyric-line.active { 
+    color: #8ab4f8; 
+    text-shadow: 0 0 20px rgba(58, 123, 213, 0.4);
+}
+
+/* Lirik aktif + 1 baris sebelum & sesudah */
+.lyric-line.prev-active {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    transform: scale(1);
+}
+.lyric-line.next-active {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14.5px;
+    transform: scale(0.98);
+}
+.theme-love .lyric-line.prev-active { color: rgba(255, 143, 171, 0.5); }
+.theme-heartbreak .lyric-line.prev-active { color: rgba(138, 180, 248, 0.5); }
 
 .audio-control-container { display: flex; justify-content: center; margin-top: 10px; }
-.audio-toggle-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); color: white; padding: 8px 28px; border-radius: 25px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.audio-toggle-btn { 
+    background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); 
+    color: white; padding: 8px 28px; border-radius: 25px; 
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+}
 .audio-toggle-btn.playing { background: #ff416c; border-color: transparent; }
 .theme-heartbreak .audio-toggle-btn.playing { background: #3a7bd5; border-color: transparent; }
 
