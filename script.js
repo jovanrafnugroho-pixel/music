@@ -9,10 +9,13 @@ const albumArt = document.getElementById('albumArt');
 let currentTheme = 'love';
 let particleInterval = null;
 let lyricLines = [];
+let isUserScrolling = false;
+let scrollTimeout = null;
+let lastActiveIndex = -1;
 
 // Database Kata Klik
 const wordsData = {
-    love: ["misteri", "waktu", "rasa", "merah", "melodi", "hati", "tenang", "berlari", "sakura", "cinta", "hangat", "bunga", "indah", "mimpi"],
+    love: ["misteri", "waktu", "rasa", "merah", "melodi", "hati", "tenang", "berlari", "cinta", "hangat", "indah", "mimpi"],
     heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing", "salju", "sepi", "hampa", "sunyi", "luka"]
 };
 
@@ -29,7 +32,6 @@ const listPertanyaan = [
     { id: 9, tipe: "essay", tanya: "Sebutkan satu sifat atau kebiasaan burukmu dalam hubungan yang saat ini sedang coba kamu perbaiki secara mandiri." }
 ];
 
-// Algoritma Pengacakan
 function acakPertanyaan(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -43,25 +45,7 @@ let indeksPertanyaanSekarang = 0;
 let dataUserSekarang = { nickname: "", nomorKado: null, pertanyaanDapat: "", jawabanUser: "" };
 let selectedOptionIndex = null;
 
-// --- AUDIO CONTROLLER ENGINE ---
-let isUserScrolling = false;
-let lastScrollTop = 0;
-
-if (lyricsBox) {
-    lyricLines = document.querySelectorAll('.lyric-line');
-    
-    lyricsBox.addEventListener('scroll', () => {
-        if (lyricsBox.classList.contains('system-scrolling')) return;
-        const currentScrollTop = lyricsBox.scrollTop;
-        if (currentScrollTop > lastScrollTop) {
-            isUserScrolling = true;
-        } else if (currentScrollTop === 0) {
-            isUserScrolling = false;
-        }
-        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-    });
-}
-
+// ============= AUDIO & LYRIC ENGINE =============
 function toggleAudio() {
     if (!audio) return;
     if (audio.paused) {
@@ -78,12 +62,26 @@ function toggleAudio() {
     }
 }
 
+// Deteksi scroll user
+if (lyricsBox) {
+    lyricLines = document.querySelectorAll('.lyric-line');
+    
+    lyricsBox.addEventListener('scroll', function() {
+        isUserScrolling = true;
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            isUserScrolling = false;
+        }, 2000);
+    });
+}
+
+// Core: Update lirik dan scroll otomatis
 if (audio) {
-    audio.addEventListener('timeupdate', () => {
+    audio.addEventListener('timeupdate', function() {
         const currentTime = audio.currentTime;
         let activeIndex = -1;
 
-        // Cari lirik aktif berdasarkan waktu
+        // Cari lirik aktif
         for (let i = 0; i < lyricLines.length; i++) {
             const time = parseFloat(lyricLines[i].getAttribute('data-time'));
             if (currentTime >= time) {
@@ -93,7 +91,10 @@ if (audio) {
             }
         }
 
-        if (activeIndex !== -1 && lyricsBox) {
+        // Hanya proses jika ada perubahan lirik
+        if (activeIndex !== -1 && activeIndex !== lastActiveIndex) {
+            lastActiveIndex = activeIndex;
+            
             // Reset semua kelas
             lyricLines.forEach(line => {
                 line.classList.remove('active', 'prev-active', 'next-active');
@@ -112,42 +113,50 @@ if (audio) {
                 lyricLines[activeIndex + 1].classList.add('next-active');
             }
 
-            // Scroll otomatis hanya jika user tidak sedang scroll
+            // SCROLL OTOMATIS - hanya jika user tidak sedang scroll
             if (!isUserScrolling) {
                 const boxHeight = lyricsBox.clientHeight;
                 const activeLine = lyricLines[activeIndex];
                 const lineTop = activeLine.offsetTop;
                 const lineHeight = activeLine.clientHeight;
-                const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
-
-                lyricsBox.classList.add('system-scrolling');
-                lyricsBox.scrollTop = scrollPosition;
-
-                setTimeout(() => {
-                    lyricsBox.classList.remove('system-scrolling');
-                }, 100);
+                
+                const targetScroll = lineTop - (boxHeight / 2) + (lineHeight / 2);
+                
+                lyricsBox.scrollTo({
+                    top: targetScroll,
+                    behavior: 'smooth'
+                });
             }
         }
     });
 }
 
-// --- SISTEM PARTIKEL ---
+// ============= PARTIKEL SYSTEM =============
 function createWarmParticle() {
     if (!particleContainer) return;
     
     const particle = document.createElement('div');
     particle.classList.add('particle-warm');
     
-    const sakuraEmojis = ['🌸', '🌸', '🌸', '🌸', '🌺', '💮', '🌷', '🌸', '🌸', '🌸'];
-    const sakuraColors = ['#ff8fab', '#ff6b8a', '#ff4d6d', '#ffb3c6', '#ffc2d1', '#ff9eb5'];
+    // PARTIKEL WARNA MERAH - Berbagai bentuk dan ukuran
+    const shapes = ['●', '♥', '♦', '●', '♥', '♦', '●', '♥'];
+    const redColors = [
+        '#ff1744', '#d50000', '#ff5252', '#ff8a80', 
+        '#f44336', '#e53935', '#ff6b6b', '#ff4757'
+    ];
     
-    particle.textContent = sakuraEmojis[Math.floor(Math.random() * sakuraEmojis.length)];
-    particle.style.color = sakuraColors[Math.floor(Math.random() * sakuraColors.length)];
-    particle.style.fontSize = (Math.random() * 20 + 16) + 'px';
+    particle.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+    particle.style.color = redColors[Math.floor(Math.random() * redColors.length)];
+    particle.style.fontSize = (Math.random() * 20 + 12) + 'px';
     particle.style.left = (Math.random() * 95 + 2) + 'vw';
-    particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+    particle.style.animationDuration = (Math.random() * 4 + 5) + 's';
     particle.style.animationDelay = (Math.random() * 5) + 's';
-    particle.style.transform = `scale(${0.5 + Math.random() * 0.5})`;
+    particle.style.textShadow = `0 0 20px ${redColors[Math.floor(Math.random() * redColors.length)]}`;
+    
+    // Efek glow untuk beberapa partikel
+    if (Math.random() > 0.7) {
+        particle.style.filter = 'blur(1px) brightness(1.5)';
+    }
     
     particleContainer.appendChild(particle);
     setTimeout(() => { 
@@ -169,15 +178,9 @@ function createColdParticle() {
     particle.style.animationDelay = (Math.random() * 6) + 's';
     particle.style.opacity = (Math.random() * 0.6 + 0.2);
     
-    // Beberapa partikel lebih terang dan berkilau
     if (Math.random() > 0.6) {
         particle.style.boxShadow = '0 0 20px rgba(200, 220, 255, 0.6), 0 0 40px rgba(200, 220, 255, 0.2)';
         particle.style.background = 'rgba(200, 220, 255, 0.9)';
-    }
-    
-    // Partikel kecil lebih banyak
-    if (size < 5) {
-        particle.style.background = 'rgba(255, 255, 255, 0.9)';
     }
     
     particleContainer.appendChild(particle);
@@ -197,14 +200,13 @@ function startParticles(theme) {
     }
     
     if (theme === 'love') {
-        // Warm particles - lebih banyak
-        particleInterval = setInterval(createWarmParticle, 200);
-        // Tambahkan banyak partikel awal
-        for (let i = 0; i < 20; i++) {
-            setTimeout(createWarmParticle, i * 150);
+        // Warm particles - merah, interval lebih rapat
+        particleInterval = setInterval(createWarmParticle, 150);
+        for (let i = 0; i < 25; i++) {
+            setTimeout(createWarmParticle, i * 120);
         }
     } else {
-        // Cold particles - lebih banyak
+        // Cold particles
         particleInterval = setInterval(createColdParticle, 150);
         for (let i = 0; i < 30; i++) {
             setTimeout(createColdParticle, i * 100);
@@ -212,7 +214,7 @@ function startParticles(theme) {
     }
 }
 
-// --- SUB-SISTEM MODAL KUESIONER ---
+// ============= MYSTERY SYSTEM =============
 function startMysteryFlow() {
     document.getElementById('nameOverlay').classList.add('show');
     
@@ -337,7 +339,7 @@ function closeMysterySystem() {
     }, 400);
 }
 
-// --- EFEK KLIK TEKS ---
+// ============= EFEK KLIK =============
 window.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
     
@@ -356,13 +358,13 @@ window.addEventListener('click', (e) => {
     setTimeout(() => { wordEl.remove(); }, 2000);
 });
 
-// --- PENGGANTI TEMA ---
+// ============= SWITCH THEME =============
 function switchTheme(theme) {
     currentTheme = theme;
     
     if (theme === 'love') {
         document.body.className = 'theme-love';
-        if (albumArt) albumArt.innerText = '🌸';
+        if (albumArt) albumArt.innerText = '❤️';
         document.getElementById('btnLove').classList.add('active-love');
         document.getElementById('btnBreak').classList.remove('active-break');
     } else {
@@ -375,9 +377,8 @@ function switchTheme(theme) {
     startParticles(theme);
 }
 
-// --- INISIALISASI ---
+// ============= INISIALISASI =============
 document.addEventListener('DOMContentLoaded', function() {
-    // Kumpulkan lyric lines
     lyricLines = document.querySelectorAll('.lyric-line');
     startParticles('love');
 });
