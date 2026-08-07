@@ -7,14 +7,15 @@ const particleContainer = document.getElementById('particleContainer');
 const albumArt = document.getElementById('albumArt');
 
 let currentTheme = 'love';
+let particleInterval = null;
 
-// Database Kata Klik Rancangan Awal Berdasarkan Tema
+// Database Kata Klik
 const wordsData = {
-    love: ["misteri", "waktu", "rasa", "merah", "melodi", "flicker", "hati", "tenang", "berlari"],
-    heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing"]
+    love: ["misteri", "waktu", "rasa", "merah", "melodi", "flicker", "hati", "tenang", "berlari", "sakura", "cinta", "hangat"],
+    heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing", "salju", "sepi", "hampa"]
 };
 
-// 9 Daftar Pertanyaan Kuesioner Karakter Hidup / Percintaan
+// 9 Daftar Pertanyaan
 const listPertanyaan = [
     { id: 1, tipe: "pilihan", tanya: "Jika cinta adalah sebuah ruang, mana situasi yang paling menggambarkan dirimu saat ini?", opsi: ["Penuh kehangatan, namun pintunya terkunci rapat.", "Jendelanya terbuka lebar, siap menerima siapa saja.", "Kosong dan berdebu, malas untuk merawatnya lagi.", "Sedang sibuk merenovasi struktur fondasi diri."] },
     { id: 2, tipe: "pilihan", tanya: "Saat seseorang yang berharga perlahan berubah menjadi asing, apa tindakan spontanmu?", opsi: ["Mengejarnya mati-matian mencari penjelasan.", "Mundur perlahan tanpa sepatah kata pun.", "Berpura-pura tidak peduli padahal mengawasi dari jauh.", "Menerima keadaan dengan cepat karena logis."] },
@@ -27,7 +28,7 @@ const listPertanyaan = [
     { id: 9, tipe: "essay", tanya: "Sebutkan satu sifat atau kebiasaan burukmu dalam hubungan yang saat ini sedang coba kamu perbaiki secara mandiri." }
 ];
 
-// Algoritma Pengacakan Pertanyaan Otomatis (Fisher-Yates Shuffle)
+// Algoritma Pengacakan
 function acakPertanyaan(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -43,27 +44,21 @@ let dataUserSekarang = { nickname: "", nomorKado: null, pertanyaanDapat: "", jaw
 let selectedOptionIndex = null;
 
 // --- AUDIO CONTROLLER ENGINE ---
-// --- AUDIO CONTROLLER ENGINE & SPOTIFY STYLE FREE SCROLL ---
-// --- AUDIO CONTROLLER ENGINE & SMART AUTO-LOCK SCROLL ---
 let isUserScrolling = false;
 let lastScrollTop = 0;
+let lyricLines = [];
 
 if (lyricsBox) {
-    // Mendeteksi arah scroll pengguna dan mekanisme auto-lock kembali
+    lyricLines = document.querySelectorAll('.lyric-line');
+    
     lyricsBox.addEventListener('scroll', () => {
-        // Jika scroll dipicu oleh sistem, abaikan logika manual user
         if (lyricsBox.classList.contains('system-scrolling')) return;
-
         const currentScrollTop = lyricsBox.scrollTop;
-
         if (currentScrollTop > lastScrollTop) {
-            // User menggeser lirik KE BAWAH -> Lepas Kunci (Unlock)
             isUserScrolling = true;
         } else if (currentScrollTop === 0) {
-            // User menggeser lirik KEMBALI KE ATAS MENTOK (0) -> Kunci Kembali (Lock)
             isUserScrolling = false;
         }
-        
         lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
     });
 }
@@ -86,11 +81,10 @@ function toggleAudio() {
 
 if (audio) {
     audio.addEventListener('timeupdate', () => {
-        const lyricLines = document.querySelectorAll('.lyric-line');
         const currentTime = audio.currentTime;
         let activeIndex = -1;
 
-        // Mencari lirik yang sesuai dengan waktu lagu berjalan
+        // Cari lirik aktif
         for (let i = 0; i < lyricLines.length; i++) {
             if (currentTime >= parseFloat(lyricLines[i].getAttribute('data-time'))) {
                 activeIndex = i;
@@ -100,219 +94,27 @@ if (audio) {
         }
 
         if (activeIndex !== -1 && lyricsBox) {
-            lyricLines.forEach(line => line.classList.remove('active'));
-            const activeLine = lyricLines[activeIndex];
-            activeLine.classList.add('active');
-            
-            // Logika Scroll Otomatis (Hanya berjalan jika status lirik ter-LOCK)
+            // Reset semua kelas
+            lyricLines.forEach(line => {
+                line.classList.remove('active', 'prev-active', 'next-active');
+            });
+
+            // Set active
+            lyricLines[activeIndex].classList.add('active');
+
+            // Set prev (activeIndex - 1)
+            if (activeIndex > 0) {
+                lyricLines[activeIndex - 1].classList.add('prev-active');
+            }
+
+            // Set next (activeIndex + 1)
+            if (activeIndex < lyricLines.length - 1) {
+                lyricLines[activeIndex + 1].classList.add('next-active');
+            }
+
+            // Scroll otomatis
             if (!isUserScrolling) {
                 const boxHeight = lyricsBox.clientHeight;
+                const activeLine = lyricLines[activeIndex];
                 const lineTop = activeLine.offsetTop;
-                const lineHeight = activeLine.clientHeight;
-                const scrollPosition = lineTop - (boxHeight / 2) + (lineHeight / 2);
-                
-                lyricsBox.classList.add('system-scrolling');
-                lyricsBox.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-                
-                // Berikan jeda waktu animasi scroll halus selesai sebelum menghapus kelas penanda sistem
-                setTimeout(() => {
-                    lyricsBox.classList.remove('system-scrolling');
-                }, 350); 
-            }
-        }
-    });
-}
-
-
-// --- SUB-SISTEM ALUR MODAL KUESIONER (FIXED NO REFRESH) ---
-function startMysteryFlow() {
-    document.getElementById('nameOverlay').classList.add('show');
-    
-    const grid = document.getElementById('giftGrid');
-    grid.innerHTML = "";
-    for (let i = 1; i <= 9; i++) {
-        grid.innerHTML += `<div class="gift-box" onclick="selectGift(${i})">🎁<span>${i}</span></div>`;
-    }
-}
-
-function submitName() {
-    const nameInput = document.getElementById('userNickname').value.trim();
-    if (!nameInput) {
-        alert("Mohon masukkan nickname kamu terlebih dahulu ya!");
-        return;
-    }
-    dataUserSekarang.nickname = nameInput;
-    document.getElementById('nameOverlay').classList.remove('show');
-    document.getElementById('giftOverlay').classList.add('show');
-}
-
-function selectGift(nomorKado) {
-    dataUserSekarang.nomorKado = nomorKado;
-    document.getElementById('giftOverlay').classList.remove('show');
-    document.getElementById('questionOverlay').classList.add('show');
-
-    const giftAnimate = document.getElementById('giftAnimate');
-    giftAnimate.className = "gift-opening-animation wobble-animate";
-
-    setTimeout(() => { giftAnimate.className = "gift-opening-animation open-animate"; }, 1500);
-    setTimeout(() => { setupPertanyaan(); }, 2200);
-}
-
-function setupPertanyaan() {
-    const qContainer = document.getElementById('questionContainer');
-    qContainer.innerHTML = "";
-    selectedOptionIndex = null;
-
-    const currentQ = pertanyaanTeracak[indeksPertanyaanSekarang];
-    dataUserSekarang.pertanyaanDapat = currentQ.tanya;
-
-    let htmlContent = `<div class="question-text">${currentQ.tanya}</div>`;
-
-    if (currentQ.tipe === "pilihan") {
-        currentQ.opsi.forEach((opsi, index) => {
-            htmlContent += `<button class="option-btn" onclick="selectOpsi(this, ${index}, '${opsi}')">${opsi}</button>`;
-        });
-    } else if (currentQ.tipe === "essay") {
-        htmlContent += `<textarea class="essay-input" id="essayAnswer" placeholder="Ketik pandangan/jawaban jujurmu di sini..."></textarea>`;
-    }
-
-    htmlContent += `<button class="mystery-btn-main" id="btnLanjut" onclick="saveAndNext('${currentQ.tipe}')">Lanjut</button>`;
-    
-    qContainer.innerHTML = htmlContent;
-    qContainer.classList.add('show');
-}
-
-function selectOpsi(btn, index, teksOpsi) {
-    const allButtons = document.querySelectorAll('.option-btn');
-    allButtons.forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedOptionIndex = index;
-    dataUserSekarang.jawabanUser = teksOpsi;
-}
-
-function saveAndNext(tipe) {
-    if (tipe === 'pilihan' && selectedOptionIndex === null) {
-        alert("Silakan pilih salah satu jawaban sebelum menekan Lanjut.");
-        return;
-    }
-    if (tipe === 'essay') {
-        const essayVal = document.getElementById('essayAnswer').value.trim();
-        if (!essayVal) {
-            alert("Kolom isian tidak boleh kosong.");
-            return;
-        }
-        dataUserSekarang.jawabanUser = essayVal;
-    }
-
-    const btnLanjut = document.getElementById('btnLanjut');
-    btnLanjut.innerText = "Mengirim...";
-    btnLanjut.disabled = true;
-
-    dataUserSekarang.waktu = new Date().toLocaleString('id-ID');
-
-    fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataUserSekarang)
-    })
-    .then(() => {
-        const cardMisteri = document.getElementById('dynamicMysteryCard');
-        cardMisteri.innerHTML = `
-            <div style="padding: 20px 10px;">
-                <h3 style="color: #ff416c; font-size: 24px; margin-bottom: 12px;">Thank You! ✨</h3>
-                <p style="color: rgba(255,255,255,0.75); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-                    Terima kasih banyak, <b>${dataUserSekarang.nickname}</b>. <br>
-                    Jawaban misterimu sudah berhasil tersimpan dengan aman ke database.
-                </p>
-                <button class="mystery-btn-main" onclick="closeMysterySystem()">Kembali</button>
-            </div>
-        `;
-    })
-    .catch(err => {
-        alert("Gagal mengirim data. Coba cek koneksi internet.");
-        btnLanjut.innerText = "Lanjut";
-        btnLanjut.disabled = false;
-    });
-}
-
-// PERBAIKAN: Menutup overlay tanpa mereset/refresh halaman agar lagu tidak berhenti
-function closeMysterySystem() {
-    document.getElementById('questionOverlay').classList.remove('show');
-    
-    // Kembalikan isi kontainer kado ke kondisi awal agar bisa dimainkan lagi nanti tanpa refresh
-    setTimeout(() => {
-        const cardMisteri = document.getElementById('dynamicMysteryCard');
-        cardMisteri.innerHTML = `
-            <div class="gift-opening-animation" id="giftAnimate">🎁</div>
-            <div class="question-container" id="questionContainer"></div>
-        `;
-        // Acak ulang pertanyaan untuk sesi berikutnya jika diinginkan
-        indeksPertanyaanSekarang = (indeksPertanyaanSekarang + 1) % pertanyaanTeracak.length;
-    }, 400);
-}
-
-
-// --- EFEK KLIK TEKS MELAYANG RANCANGAN AWAL ---
-window.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
-    
-    const wordEl = document.createElement('div');
-    wordEl.classList.add('click-word');
-    
-    const activeWords = wordsData[currentTheme];
-    const randomWord = activeWords[Math.floor(Math.random() * activeWords.length)];
-    
-    wordEl.innerText = randomWord;
-    wordEl.style.color = currentTheme === 'love' ? `hsl(${340 + Math.random() * 20}, 100%, 75%)` : `hsl(${210 + Math.random() * 20}, 100%, 75%)`;
-    wordEl.style.left = e.clientX + 'px';
-    wordEl.style.top = e.clientY + 'px';
-    
-    document.body.appendChild(wordEl);
-    setTimeout(() => { wordEl.remove(); }, 2000);
-});
-
-// --- PENGGANTI TEMA RANCANGAN AWAL ---
-function switchTheme(theme) {
-    currentTheme = theme;
-    if (particleContainer) particleContainer.innerHTML = '';
-    if (theme === 'love') {
-        document.body.className = 'theme-love';
-        if (albumArt) albumArt.innerText = '💝';
-        document.getElementById('btnLove').classList.add('active-love');
-        document.getElementById('btnBreak').classList.remove('active-break');
-    } else {
-        document.body.className = 'theme-heartbreak';
-        if (albumArt) albumArt.innerText = '💧';
-        document.getElementById('btnBreak').classList.add('active-break');
-        document.getElementById('btnLove').classList.remove('active-love');
-    }
-}
-
-// --- GENERATOR PARTIKEL JALAN OTOMATIS ---
-function createParticle() {
-    if (!particleContainer || particleContainer.childElementCount > 25) return;
-    const particle = document.createElement('div');
-    if (currentTheme === 'love') {
-        particle.classList.add('particle-love');
-        const size = Math.random() * 12 + 8;
-        particle.style.width = size + 'px';
-        particle.style.height = size + 'px';
-        if (Math.random() > 0.4) {
-            particle.innerHTML = "<span style='color: rgba(255,75,107,0.3); font-size:12px;'>❤️</span>";
-            particle.style.background = "none";
-        }
-        particle.style.left = Math.random() * 95 + 'vw';
-        particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
-    } else {
-        particle.classList.add('particle-snow');
-        const size = Math.random() * 4 + 2;
-        particle.style.width = size + 'px';
-        particle.style.height = size + 'px';
-        particle.style.left = Math.random() * 95 + 'vw';
-        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
-    }
-    particleContainer.appendChild(particle);
-    setTimeout(() => { particle.remove(); }, 6000);
-}
-setInterval(createParticle, 400);
+                const line
