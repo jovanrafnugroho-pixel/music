@@ -112,5 +112,21 @@
     <audio id="myAudio" src="audio.mp3"></audio>
 
     <script src="script.js"></script>
+<!-- PHOTO SLIDER SECTION -->
+<div class="photo-slider-container">
+    <div class="slider-wrapper" id="sliderWrapper">
+        <!-- Tambahkan foto-foto kamu di sini -->
+        <div class="slide"><img src="foto1.jpg" alt="Foto Kenangan 1"></div>
+        <div class="slide"><img src="foto2.jpg" alt="Foto Kenangan 2"></div>
+        <div class="slide"><img src="foto3.jpg" alt="Foto Kenangan 3"></div>
+    </div>
+    <!-- Tombol Navigasi Geser -->
+    <button class="slider-btn prev-btn" onclick="moveSlide(-1)">❮</button>
+    <button class="slider-btn next-btn" onclick="moveSlide(1)">❯</button>
+</div>
+
+<!-- Audio Khusus Efek Slide -->
+<audio id="slideSound" src="slide-effect.mp3"></audio>
+
 </body>
 </html>
