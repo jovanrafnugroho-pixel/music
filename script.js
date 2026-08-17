@@ -381,4 +381,42 @@ function switchTheme(theme) {
 document.addEventListener('DOMContentLoaded', function() {
     lyricLines = document.querySelectorAll('.lyric-line');
     startParticles('love');
+// ============= PHOTO SLIDER & SOUND ENGINE =============
+let currentSlideIndex = 0;
+
+function moveSlide(direction) {
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    
+    currentSlideIndex += direction;
+    
+    // Perulangan slide (kalau habis balik ke awal/akhir)
+    if (currentSlideIndex >= totalSlides) {
+        currentSlideIndex = 0;
+    } else if (currentSlideIndex < 0) {
+        currentSlideIndex = totalSlides - 1;
+    }
+    
+    updateSlidePosition();
+    playSlideSound();
+}
+
+function updateSlidePosition() {
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    if (sliderWrapper) {
+        sliderWrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+    }
+}
+
+function playSlideSound() {
+    const slideSound = document.getElementById('slideSound');
+    if (slideSound) {
+        slideSound.currentTime = 0; // Reset durasi ke awal agar bisa di-spam
+        slideSound.volume = 0.5;     // Atur kenyaringan (0.0 sampai 1.0)
+        slideSound.play().catch(err => {
+            // Mengabaikan error jika browser memblokir autoplay sebelum interaksi user
+        });
+    }
+}
+
 });
