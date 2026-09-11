@@ -15,17 +15,17 @@ let lastActiveIndex = -1;
 
 // Database Kata Klik
 const wordsData = {
-    love: ["misteri", "waktu", "rasa", "merah", "melodi", "hati", "tenang", "berlari", "cinta", "hangat", "indah", "mimpi"],
+    love: ["maybe", "time", "feel", "fast", "but sometimes", "it makes", "peace", "calm", "love", "harm", "beauty", "dream"],
     heartbreak: ["labirin", "filsuf", "ilmuwan", "jenius", "redup", "masa lalu", "kabut", "dingin", "asing", "salju", "sepi", "hampa", "sunyi", "luka"]
 };
 
 // 9 Daftar Pertanyaan
 const listPertanyaan = [
     { id: 1, tipe: "pilihan", tanya: "Jika cinta adalah sebuah ruang, mana situasi yang paling menggambarkan dirimu saat ini?", opsi: ["Penuh kehangatan, namun pintunya terkunci rapat.", "Jendelanya terbuka lebar, siap menerima siapa saja.", "Kosong dan berdebu, malas untuk merawatnya lagi.", "Sedang sibuk merenovasi struktur fondasi diri."] },
-    { id: 2, tipe: "pilihan", tanya: "Saat seseorang yang berharga perlahan berubah menjadi asing, apa tindakan spontanmu?", opsi: ["Mengejarnya mati-matian mencari penjelasan.", "Mundur perlahan tanpa sepatah kata pun.", "Berpura-pura tidak peduli padahal mengawasi dari jauh.", "Menerima keadaan dengan cepat karena logis."] },
+    { id: 2, tipe: "pilihan", tanya: "Saat seseorang yang berharga perlahan berubah menjadi asing, apa tindakan spontanmu?", opsi: ["Apakah mencari penjelasan/tau dibaliknya?.", "Mundur perlahan tanpa sepatah kata pun.", "Berpura-pura tidak peduli padahal mengawasi dari jauh.", "Menerima keadaan dengan cepat karena logis."] },
     { id: 3, tipe: "pilihan", tanya: "Dalam sebuah komitmen, hal mana yang paling menakutkan bagimu?", opsi: ["Kehilangan kebebasan dan ambisi pribadi.", "Dikhianati setelah memberikan segalanya.", "Rasa bosan yang membunuh percikan awal.", "Menyadari bahwa dia bukan orang yang tepat di akhir."] },
-    { id: 4, tipe: "pilihan", tanya: "Jika kamu bisa membaca pikiran pasangan/orang terdekatmu selama 5 menit, apakah kamu akan melakukannya?", opsi: ["Ya, aku butuh kepastian mutlak atas raguku.", "Tidak, ketidaktahuan terkadang adalah pelindung terbaik.", "Hanya jika hubunganku sedang di ambang kehancuran.", "Lebih memilih bertanya langsung secara jujur."] },
-    { id: 5, tipe: "essay", tanya: "Tuliskan secara jujur, apa definisi 'keterikatan emosional yang sehat' menurut sudut pandang pribadimu?" },
+    { id: 4, tipe: "pilihan", tanya: "Jika kamu bisa membaca pikiran orang terdekatmu apakah kamu siap menerima kekuranganya?", opsi: ["Ya, aku butuh kepastian mutlak atas raguku.", "Tidak, ketidaktahuan terkadang adalah pelindung terbaik.", "Hanya jika hubunganku sedang di ambang kehancuran.", "Lebih memilih bertanya langsung secara jujur."] },
+    { id: 5, tipe: "essay", tanya: "apa definisi 'cinta' menurutmu?" },
     { id: 6, tipe: "pilihan", tanya: "Bagaimana caramu berdamai dengan ekspektasi cinta yang patah di masa lalu?", opsi: ["Menjadikannya benteng pertahanan yang super ketat.", "Mencoba melupakannya dengan mencari distraksi baru.", "Menerimanya sebagai guru filsafat hidup terbaik.", "Masih sering terjebak dalam siklus penyesalan."] },
     { id: 7, tipe: "pilihan", tanya: "Manakah yang lebih bernilai tinggi bagimu dalam mempertahankan sebuah hubungan?", opsi: ["Kecocokan intelektual & jalan pikiran.", "Kehadiran fisik & afeksi yang intens.", "Komitmen emosional & rasa aman jangka panjang.", "Kebebasan untuk tetap tumbuh secara mandiri."] },
     { id: 8, tipe: "essay", tanya: "Bila kamu dihadapkan pada pilihan: 'Mencintai dengan risiko hancur' atau 'Tidak pernah mencintai agar aman', mana yang kamu pilih dan mengapa?" },
