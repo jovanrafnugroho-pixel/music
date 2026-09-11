@@ -81,7 +81,6 @@ if (audio) {
         const currentTime = audio.currentTime;
         let activeIndex = -1;
 
-        // Cari lirik aktif
         for (let i = 0; i < lyricLines.length; i++) {
             const time = parseFloat(lyricLines[i].getAttribute('data-time'));
             if (currentTime >= time) {
@@ -91,29 +90,23 @@ if (audio) {
             }
         }
 
-        // Hanya proses jika ada perubahan lirik
         if (activeIndex !== -1 && activeIndex !== lastActiveIndex) {
             lastActiveIndex = activeIndex;
             
-            // Reset semua kelas
             lyricLines.forEach(line => {
                 line.classList.remove('active', 'prev-active', 'next-active');
             });
 
-            // Set active
             lyricLines[activeIndex].classList.add('active');
 
-            // Set prev (activeIndex - 1)
             if (activeIndex > 0) {
                 lyricLines[activeIndex - 1].classList.add('prev-active');
             }
 
-            // Set next (activeIndex + 1)
             if (activeIndex < lyricLines.length - 1) {
                 lyricLines[activeIndex + 1].classList.add('next-active');
             }
 
-            // SCROLL OTOMATIS - hanya jika user tidak sedang scroll
             if (!isUserScrolling) {
                 const boxHeight = lyricsBox.clientHeight;
                 const activeLine = lyricLines[activeIndex];
@@ -138,8 +131,7 @@ function createWarmParticle() {
     const particle = document.createElement('div');
     particle.classList.add('particle-warm');
     
-    // PARTIKEL WARNA MERAH - Berbagai bentuk dan ukuran
-    const shapes = ['●', '♥', '♦', '●', '♥', '♦', '●', '♥'];
+    const shapes = ['❁', '❥', '❦', '❁', '❥', '❦', '❁', '❥'];
     const redColors = [
         '#ff1744', '#d50000', '#ff5252', '#ff8a80', 
         '#f44336', '#e53935', '#ff6b6b', '#ff4757'
@@ -153,7 +145,6 @@ function createWarmParticle() {
     particle.style.animationDelay = (Math.random() * 5) + 's';
     particle.style.textShadow = `0 0 20px ${redColors[Math.floor(Math.random() * redColors.length)]}`;
     
-    // Efek glow untuk beberapa partikel
     if (Math.random() > 0.7) {
         particle.style.filter = 'blur(1px) brightness(1.5)';
     }
@@ -200,13 +191,11 @@ function startParticles(theme) {
     }
     
     if (theme === 'love') {
-        // Warm particles - merah, interval lebih rapat
         particleInterval = setInterval(createWarmParticle, 150);
         for (let i = 0; i < 25; i++) {
             setTimeout(createWarmParticle, i * 120);
         }
     } else {
-        // Cold particles
         particleInterval = setInterval(createColdParticle, 150);
         for (let i = 0; i < 30; i++) {
             setTimeout(createColdParticle, i * 100);
@@ -260,7 +249,7 @@ function setupPertanyaan() {
 
     if (currentQ.tipe === "pilihan") {
         currentQ.opsi.forEach((opsi, index) => {
-            htmlContent += `<button class="option-btn" onclick="selectOpsi(this, ${index}, '${opsi}')">${opsi}</button>`;
+            htmlContent += `<button class="option-btn" onclick="selectOpsi(this, ${index}, '${opsi.replace(/'/g, "\\'")}')">${opsi}</button>`;
         });
     } else if (currentQ.tipe === "essay") {
         htmlContent += `<textarea class="essay-input" id="essayAnswer" placeholder="Ketik pandangan/jawaban jujurmu di sini..."></textarea>`;
@@ -315,7 +304,12 @@ function saveAndNext(tipe) {
                     Terima kasih banyak, <b>${dataUserSekarang.nickname}</b>. <br>
                     Jawaban misterimu sudah berhasil tersimpan dengan aman ke database.
                 </p>
-                <button class="mystery-btn-main" onclick="closeMysterySystem()">Kembali</button>
+                <button class="mystery-btn-main" onclick="openLetter()" style="background: linear-gradient(135deg, #ff1744, #d50000); margin-bottom: 10px;">
+                    📖 Baca Tulisan
+                </button>
+                <button class="mystery-btn-main" onclick="closeMysterySystem()" style="background: rgba(255,255,255,0.1);">
+                    Kembali
+                </button>
             </div>
         `;
     })
@@ -339,9 +333,29 @@ function closeMysterySystem() {
     }, 400);
 }
 
+// ============= SURAT / TULISAN =============
+function openLetter() {
+    document.getElementById('questionOverlay').classList.remove('show');
+    setTimeout(() => {
+        document.getElementById('letterOverlay').classList.add('show');
+    }, 300);
+}
+
+function closeLetter() {
+    document.getElementById('letterOverlay').classList.remove('show');
+    setTimeout(() => {
+        const cardMisteri = document.getElementById('dynamicMysteryCard');
+        cardMisteri.innerHTML = `
+            <div class="gift-opening-animation" id="giftAnimate">🎁</div>
+            <div class="question-container" id="questionContainer"></div>
+        `;
+        indeksPertanyaanSekarang = (indeksPertanyaanSekarang + 1) % pertanyaanTeracak.length;
+    }, 400);
+}
+
 // ============= EFEK KLIK =============
 window.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
+    if (e.target.tagName === 'BUTTON' || e.target.closest('.mystery-card') || e.target.closest('.letter-card') || e.target.classList.contains('lyric-line') || e.target.closest('.gift-box')) return;
     
     const wordEl = document.createElement('div');
     wordEl.classList.add('click-word');
@@ -381,42 +395,4 @@ function switchTheme(theme) {
 document.addEventListener('DOMContentLoaded', function() {
     lyricLines = document.querySelectorAll('.lyric-line');
     startParticles('love');
-// ============= PHOTO SLIDER & SOUND ENGINE =============
-let currentSlideIndex = 0;
-
-function moveSlide(direction) {
-    const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length;
-    
-    currentSlideIndex += direction;
-    
-    // Perulangan slide (kalau habis balik ke awal/akhir)
-    if (currentSlideIndex >= totalSlides) {
-        currentSlideIndex = 0;
-    } else if (currentSlideIndex < 0) {
-        currentSlideIndex = totalSlides - 1;
-    }
-    
-    updateSlidePosition();
-    playSlideSound();
-}
-
-function updateSlidePosition() {
-    const sliderWrapper = document.getElementById('sliderWrapper');
-    if (sliderWrapper) {
-        sliderWrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-    }
-}
-
-function playSlideSound() {
-    const slideSound = document.getElementById('slideSound');
-    if (slideSound) {
-        slideSound.currentTime = 0; // Reset durasi ke awal agar bisa di-spam
-        slideSound.volume = 0.5;     // Atur kenyaringan (0.0 sampai 1.0)
-        slideSound.play().catch(err => {
-            // Mengabaikan error jika browser memblokir autoplay sebelum interaksi user
-        });
-    }
-}
-
 });
