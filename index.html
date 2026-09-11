@@ -109,24 +109,33 @@
         </div>
     </div>
 
+    <!-- ============ SURAT / TULISAN NOVEL ============ -->
+    <div class="mystery-overlay letter-overlay" id="letterOverlay">
+        <div class="letter-card">
+            <div class="letter-flower">
+                <!-- TARUH FILE GAMBAR BUNGA DI FOLDER YANG SAMA DENGAN index.html -->
+                <img src="flower.png" alt="Bunga">
+            </div>
+            <h2 class="letter-title">Untuk Kamu, Yang Pernah Singgah</h2>
+            <div class="letter-body">
+                <p>Ada hal-hal yang tidak pernah selesai aku ucapkan, meski berkali-kali lidahku mencoba. Bukan karena aku lupa, tapi karena setiap kali mengingatmu, ada semacam gemuruh kecil di dadaku yang menolak untuk diberi nama. Kamu adalah bab yang tak pernah kututup, halaman yang masih lembab oleh hujan yang jatuh bertahun-tahun lalu.</p>
+
+                <p>Aku ingat caramu tertawa — pelan, seperti sesuatu yang kau sembunyikan dari dunia. Aku ingat bagaimana jemarimu menyentuh cangkir kopi di pagi yang terlalu dingin, dan bagaimana matamu mencari langit ketika kau sedang memikirkan sesuatu yang tak ingin kau bagi. Hal-hal kecil itu, yang mungkin sudah kau lupakan, justru yang paling sering datang kepadaku di jam-jam sunyi.</p>
+
+                <p>Kita tidak pernah benar-benar berpisah, bukan? Kita hanya berhenti saling menyapa. Kita hanya belajar bahwa cinta tidak selalu soal bertahan — kadang ia soal merelakan dengan cara yang paling dewasa. Dan itu, sayangku, adalah pelajaran paling pahit yang pernah kubaca dari wajahmu.</p>
+
+                <p>Mungkin suatu hari kita akan bertemu lagi di persimpangan yang tidak kita rencanakan. Mungkin kita hanya akan saling melempar senyum, lalu berjalan ke arah masing-masing. Atau mungkin kita akan duduk sebentar, berbagi cerita tentang siapa yang sempat kita cintai setelah satu sama lain. Apa pun itu, aku ingin kau tahu: tidak ada satu pun bagian dari dirimu yang pernah kubenci. Bahkan saat kau menyakitiku, aku tetap menyimpanmu di tempat yang paling hangat.</p>
+
+                <p>Terima kasih sudah pernah menjadi rumah, meski pada akhirnya aku harus pindah. Terima kasih sudah menjadi alasan aku mengenal diriku sendiri — sisi yang rapuh, sisi yang kuat, sisi yang tidak pernah kutunjukkan pada siapa pun selain kau.</p>
+
+                <p class="letter-signature">— Dari aku, yang masih menulis tentangmu.</p>
+            </div>
+            <button class="mystery-btn-main" onclick="closeLetter()" style="margin-top: 25px;">Tutup Surat</button>
+        </div>
+    </div>
+
     <audio id="myAudio" src="audio.mp3"></audio>
 
     <script src="script.js"></script>
-<!-- PHOTO SLIDER SECTION -->
-<div class="photo-slider-container">
-    <div class="slider-wrapper" id="sliderWrapper">
-        <!-- Tambahkan foto-foto kamu di sini -->
-        <div class="slide"><img src="foto1.jpg" alt="Foto Kenangan 1"></div>
-        <div class="slide"><img src="foto2.jpg" alt="Foto Kenangan 2"></div>
-        <div class="slide"><img src="foto3.jpg" alt="Foto Kenangan 3"></div>
-    </div>
-    <!-- Tombol Navigasi Geser -->
-    <button class="slider-btn prev-btn" onclick="moveSlide(-1)">❮</button>
-    <button class="slider-btn next-btn" onclick="moveSlide(1)">❯</button>
-</div>
-
-<!-- Audio Khusus Efek Slide -->
-<audio id="slideSound" src="slide-effect.mp3"></audio>
-
 </body>
 </html>
